@@ -1,0 +1,326 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage[left=3.00cm, right=2.00cm, top=2.50cm, bottom=2.50cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usetikzlibrary{calc}
+
+% Cấu hình liên kết
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+% Cấu hình header & footer cho trang nội dung
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small{\textit{Báo cáo thực tập tuần 2}}}
+\lfoot{\small{Sinh viên thực hiện: Nguyễn Thanh Hà}}
+\rfoot{\thepage}
+
+% Định dạng tiêu đề phần
+\titleformat{\section}{\normalfont\fontsize{14}{17}\bfseries\selectfont\color{black}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{15}\bfseries\selectfont\color{black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{15}\itshape\selectfont\color{black}}{\thesubsubsection}{1em}{}
+
+% Cấu hình hiển thị mã nguồn C++
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.94}
+
+\lstdefinestyle{cppstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showstringspaces=false,
+    tabsize=2,
+    frame=single
+}
+\lstset{style=cppstyle}
+
+\begin{document}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 1.5pt] ($(current page.north west) + (3.0cm,-2.0cm)$) rectangle ($(current page.south east) + (-1.5cm,2.0cm)$);
+  \draw[line width = 0.5pt] ($(current page.north west) + (3.1cm,-2.1cm)$) rectangle ($(current page.south east) + (-1.6cm,2.1cm)$);
+\end{tikzpicture}
+
+\begin{center}
+    \textbf{\fontsize{14}{17}\selectfont Trường Đại học Công nghệ} \\
+    \textbf{\fontsize{12}{15}\selectfont Khoa Điện tử Viễn thông} \\
+    
+    \vspace{2.5cm}
+    \includegraphics[width=4.5cm]{logo_uet.png} \\
+    
+    \vspace{2.5cm}
+    \textbf{\fontsize{16}{20}\selectfont BÁO CÁO THỰC TẬP TUẦN 2} \\[0.5cm]
+    \textbf{\fontsize{13}{16}\selectfont ĐỀ TÀI: GIẢ LẬP HỆ THỐNG THANG MÁY THÔNG MINH} \\
+    \textbf{\fontsize{13}{16}\selectfont TÍCH HỢP QUÉT SINH TRẮC HỌC } \\
+    
+    \vspace{3.5cm}
+    \fontsize{12}{15}\selectfont
+    \begin{tabular}{ll}
+        Sinh viên thực hiện: & \textbf{Nguyễn Thanh Hà} \\
+        Mã số sinh viên:     & \textbf{23021810} \\
+        Lớp:                 & \textbf{K68E-EC1} \\
+        Người hướng dẫn:     & \textbf{Hồ Sỹ Minh} \\
+    \end{tabular}
+    
+    \vfill
+    \textbf{\fontsize{12}{15}\selectfont Hà Nội, 2026}
+\end{center}
+\end{titlepage}
+
+% ==================== TRANG MỤC LỤC ====================
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+
+\newpage
+\setcounter{page}{4}
+
+% ==================== NỘI DUNG CHÍNH ====================
+
+\section{Tóm tắt kết quả Tuần 1 và kế hoạch Tuần 2}
+
+Kết thúc tuần 1, sinh viên đã hoàn thành toàn bộ giai đoạn khảo sát, nghiên cứu và thiết kế hệ thống. Tài liệu thiết kế bao gồm: yêu cầu chức năng/phi chức năng, Database Schema, Class Diagram và luồng xử lý tổng thể đã được Mentor VNPT-Media phê duyệt.
+
+Sang tuần 2, sinh viên tiến hành hiện thực hóa toàn bộ thiết kế thành mã nguồn C++ hoàn chỉnh theo kế hoạch:
+
+\begin{itemize}
+    \item \textbf{Thứ Hai:} Cài đặt môi trường build, cấu hình CMake, khởi tạo cấu trúc dự án.
+    \item \textbf{Thứ Ba:} Lập trình module \texttt{DatabaseManager} quản lý SQLite3.
+    \item \textbf{Thứ Tư:} Lập trình các chức năng nhận diện khuôn mặt AI bằng OpenCV LBPH.
+    \item \textbf{Thứ Năm:} Lập trình máy trạng thái thang máy và giao diện đồ họa mô phỏng.
+    \item \textbf{Thứ Sáu:} Tích hợp hệ thống, giao tiếp COM, kiểm thử và nghiệm thu sản phẩm.
+\end{itemize}
+
+\newpage
+
+\section{Báo cáo công việc Tuần 2: Lập trình và Nghiệm thu sản phẩm}
+
+\subsection{Phân bổ chi tiết lịch trình công việc hàng ngày}
+
+Tuần thứ hai tập trung vào việc hiện thực hóa thiết kế từ tuần 1 thành sản phẩm chạy thực tế:
+
+\begin{enumerate}
+    \item \textbf{Thứ Hai:} Cài đặt và cấu hình môi trường build hoàn chỉnh: MSYS2/UCRT64, thư viện OpenCV 4.x và SQLite3. Viết tệp \texttt{CMakeLists.txt} để tự động hóa quá trình biên dịch và kiểm tra build lần đầu thành công.
+
+    \item \textbf{Thứ Ba:} Lập trình module \texttt{DatabaseManager} trong hai tệp \texttt{database.h} và \texttt{database.cpp}: mở kết nối SQLite3, tạo bảng \texttt{residents}, hiện thực các hàm CRUD (thêm, xóa, truy vấn cư dân), lưu ảnh khuôn mặt mẫu và tải dữ liệu huấn luyện.
+
+    \item \textbf{Thứ Tư:} Lập trình các chức năng nhận diện khuôn mặt AI: hàm \texttt{enrollFace()} thu thập ảnh mẫu qua camera, hàm \texttt{trainRecognizer()} huấn luyện mô hình LBPH và lưu ra file \texttt{lbph\_model.yml}, hàm \texttt{isModelUpToDate()} kiểm tra tính hiệu lực của model cache để tránh huấn luyện lại không cần thiết.
+
+    \item \textbf{Thứ Năm:} Lập trình máy trạng thái thang máy (Elevator State Machine) gồm 7 trạng thái: \texttt{IDLE}, \texttt{DOOR\_OPENING\_BEFORE}, \texttt{BOARDING}, \texttt{DOOR\_CLOSING\_BEFORE}, \texttt{MOVING}, \texttt{ARRIVED}, \texttt{DOOR\_CLOSING\_AFTER}. Song song đó lập trình hàm \texttt{drawElevatorUI()} vẽ giao diện mô phỏng thang máy bằng OpenCV.
+
+    \item \textbf{Thứ Sáu:} Tích hợp toàn bộ module vào hàm \texttt{main()}, lập trình giao tiếp cổng COM3 qua Win32 API (9600 baud, 8N1), thực hiện kiểm thử đơn vị (Unit Test) và chạy Demo nghiệm thu sản phẩm trực tiếp trước Mentor tại VNPT-Media.
+\end{enumerate}
+
+\begin{table}[h!]
+\centering
+\caption{Phân bổ lịch trình công việc Tuần 2}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|m{2cm}|m{8cm}|m{4.5cm}|}
+\hline
+\textbf{Thời gian} & \textbf{Nội dung công việc thực hiện} & \textbf{Kết quả / Sản phẩm yêu cầu} \\ \hline
+Thứ Hai &
+Cài đặt và cấu hình môi trường build hoàn chỉnh: MSYS2/UCRT64, OpenCV 4.x, SQLite3. Viết \texttt{CMakeLists.txt} và kiểm tra build thành công. &
+Môi trường build hoạt động, file thực thi mẫu sinh ra không lỗi. \\ \hline
+Thứ Ba &
+Lập trình module \texttt{DatabaseManager} (\texttt{database.h} / \texttt{database.cpp}): kết nối SQLite3, tạo bảng \texttt{residents}, các hàm CRUD và quản lý ảnh khuôn mặt. &
+Module Database hoàn chỉnh, test thêm/xóa/truy vấn cư dân thành công. \\ \hline
+Thứ Tư &
+Lập trình chức năng nhận diện khuôn mặt AI: \texttt{enrollFace()} chụp ảnh mẫu, \texttt{trainRecognizer()} huấn luyện LBPH, \texttt{isModelUpToDate()} kiểm tra cache model. &
+Nhận diện được khuôn mặt, lưu và tải lại model \texttt{lbph\_model.yml} thành công. \\ \hline
+Thứ Năm &
+Lập trình máy trạng thái thang máy (7 trạng thái) và giao diện đồ họa mô phỏng \texttt{drawElevatorUI()} bằng OpenCV. &
+Giao diện thang máy hoạt động mượt mà: mở/đóng cửa, di chuyển đúng tầng, hiển thị thông tin cư dân. \\ \hline
+Thứ Sáu &
+Tích hợp toàn bộ module vào \texttt{main()}, lập trình giao tiếp COM3 (Win32 API), kiểm thử đơn vị và chạy Demo nghiệm thu sản phẩm trước Mentor. &
+Hệ thống hoàn chỉnh: nhận diện mặt $\rightarrow$ gửi lệnh COM $\rightarrow$ thang máy mô phỏng chạy đúng. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Chi tiết kỹ thuật từng ngày}
+
+\subsubsection{Thứ Hai --- Cấu hình môi trường và CMakeLists.txt}
+
+Tệp \texttt{CMakeLists.txt} được viết để tự động tìm kiếm và liên kết thư viện OpenCV và SQLite3:
+
+\begin{lstlisting}[language=make, caption={Tệp CMakeLists.txt cấu hình build dự án}]
+cmake_minimum_required(VERSION 3.10)
+project(SmartElevatorCamera)
+
+set(CMAKE_CXX_STANDARD 17)
+set(OpenCV_DIR "C:/msys64/ucrt64/lib/cmake/opencv4")
+
+find_package(OpenCV REQUIRED)
+find_package(SQLite3 REQUIRED)
+
+add_executable(SmartElevatorCamera main.cpp database.cpp)
+
+target_link_libraries(SmartElevatorCamera
+    ${OpenCV_LIBS}
+    ${SQLite3_LIBRARIES}
+)
+\end{lstlisting}
+
+\subsubsection{Thứ Ba --- Lập trình Module DatabaseManager}
+
+Module \texttt{DatabaseManager} phụ trách toàn bộ thao tác với cơ sở dữ liệu SQLite3. Bảng \texttt{residents} được khởi tạo bằng câu lệnh SQL sau:
+
+\begin{lstlisting}[language=C++, caption={Khởi tạo bảng cư dân trong SQLite3}]
+const char* sql = R"(
+    CREATE TABLE IF NOT EXISTS residents (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        name         TEXT    NOT NULL UNIQUE,
+        apartment    TEXT    NOT NULL,
+        target_floor INTEGER NOT NULL
+    );
+)";
+sqlite3_exec(db, sql, nullptr, nullptr, nullptr);
+\end{lstlisting}
+
+\subsubsection{Thứ Tư --- Lập trình nhận diện khuôn mặt AI (OpenCV LBPH)}
+
+\textbf{Hàm enrollFace()} --- Thu thập ảnh khuôn mặt mẫu qua camera, mỗi cư dân cần 30 ảnh mẫu grayscale kích thước $100 \times 100$ pixel:
+
+\begin{lstlisting}[language=C++, caption={Hàm enrollFace() thu thập ảnh mẫu}]
+// Moi lan nhan phim 'S': cat vung mat, resize 100x100, luu vao disk
+if ((key == 's' || key == 'S') && !faces.empty()) {
+    Mat faceROI = gray(faces[0]);
+    Mat resized;
+    resize(faceROI, resized, Size(100, 100));
+    db.saveFaceImage(resident.id, resized, sampleCount++);
+}
+// Du 30 mau thi ket thuc tu dong
+if (sampleCount >= ENROLLMENT_SAMPLES) break;
+\end{lstlisting}
+
+\textbf{Hàm trainRecognizer()} --- Huấn luyện mô hình LBPH từ toàn bộ ảnh mẫu và lưu ra file \texttt{.yml} để tái sử dụng:
+
+\begin{lstlisting}[language=C++, caption={Huấn luyện và lưu mô hình LBPH}]
+FaceTrainingData data = db.loadAllFaceTrainingData();
+auto recognizer = LBPHFaceRecognizer::create();
+recognizer->train(data.images, data.labels);
+// Luu model ra file .yml, lan sau khoi dong tai truc tiep
+recognizer->save("lbph_model.yml");
+\end{lstlisting}
+
+\textbf{Hàm isModelUpToDate()} --- So sánh thời gian sửa đổi của file model với các ảnh mẫu. Nếu model còn mới hơn, bỏ qua bước huấn luyện lại:
+
+\begin{lstlisting}[language=C++, caption={Kiểm tra model cache còn hiệu lực không}]
+LARGE_INTEGER modelTime = getFileModTime("lbph_model.yml");
+if (modelTime.QuadPart == 0) return false; // Chua co model
+
+WIN32_FIND_DATAA ffd;
+HANDLE hFind = FindFirstFileA("faces\\*\\*.jpg", &ffd);
+do {
+    LARGE_INTEGER imgTime = {0};
+    imgTime.LowPart  = ffd.ftLastWriteTime.dwLowDateTime;
+    imgTime.HighPart = (LONG)ffd.ftLastWriteTime.dwHighDateTime;
+    if (imgTime.QuadPart > modelTime.QuadPart)
+        return false; // Co anh moi -> huan luyen lai
+} while (FindNextFileA(hFind, &ffd));
+FindClose(hFind);
+return true; // Model con hieu luc
+\end{lstlisting}
+
+\subsubsection{Thứ Năm --- Máy trạng thái thang máy và giao diện đồ họa}
+
+Cấu trúc \texttt{Elevator} lưu toàn bộ trạng thái thang máy và được cập nhật mỗi 30ms trong vòng lặp chính:
+
+\begin{lstlisting}[language=C++, caption={Cập nhật trạng thái ELEVATOR\_MOVING}]
+case ELEVATOR_MOVING: {
+    int floorDiff = abs(elev.targetFloor - elev.currentFloor);
+    double totalTravelTime = floorDiff * 1500.0; // 1500ms/tang
+    double progress = elapsed / totalTravelTime;
+    if (progress >= 1.0) {
+        elev.currentFloor = elev.targetFloor;
+        elev.state = ELEVATOR_ARRIVED;
+    } else {
+        // Cap nhat vi tri cabin theo thoi gian thuc
+        elev.currentVisualFloor = elev.currentFloor
+            + progress * (elev.targetFloor - elev.currentFloor);
+    }
+    break;
+}
+\end{lstlisting}
+
+Hàm \texttt{drawElevatorUI()} vẽ giao diện mô phỏng bằng OpenCV gồm: LED panel hiển thị tầng, thông tin cư dân, cabin với cửa trượt hai bên, trục tầng và ảnh khuôn mặt nhúng trong cabin.
+
+\subsubsection{Thứ Sáu --- Tích hợp COM và kiểm thử nghiệm thu}
+
+Giao tiếp phần cứng qua cổng COM3 được lập trình bằng Win32 API với cấu hình 9600 baud, 8N1, gửi 1 byte mã tầng mỗi khi nhận diện thành công. Cơ chế chống spam lệnh được tích hợp thông qua State Machine: lệnh COM chỉ gửi đúng một lần khi thang máy chuyển từ \texttt{IDLE} sang \texttt{DOOR\_OPENING\_BEFORE}:
+
+\begin{lstlisting}[language=C++, caption={Gửi lệnh COM một lần duy nhất, chống spam}]
+// Chi gui lenh khi thang may chuyen tu IDLE -> hoat dong
+bool trigger = (foundResident && elevator.state == ELEVATOR_IDLE);
+if (updateElevator(elevator, trigger, bestResident, bestFaceCrop)) {
+    // Gui 1 byte ma tang (vi du: tang 5 -> ky tu '5' = 0x35)
+    char floorChar = '0' + elevator.targetFloor;
+    if (useSerial) {
+        sendData(hSerial, floorChar);
+    } else {
+        cout << "[DEMO] Tang " << elevator.targetFloor << endl;
+    }
+}
+\end{lstlisting}
+
+\subsection{Kết quả kiểm thử đơn vị (Unit Test)}
+
+Dưới đây là kết quả kiểm thử các chức năng chính của hệ thống SmartElevator Camera:
+
+\begin{table}[h!]
+\centering
+\caption{Kết quả kiểm thử đơn vị của dự án SmartElevator Camera}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|m{1.5cm}|m{4.5cm}|m{4.5cm}|m{2.5cm}|m{1.5cm}|}
+\hline
+\textbf{Mã TC} & \textbf{Mục tiêu kiểm thử} & \textbf{Dữ liệu đầu vào} & \textbf{Kết quả mong đợi} & \textbf{Trạng thái} \\ \hline
+TC01 & Đăng ký khuôn mặt đủ 30 mẫu & Ngồi trước camera, bấm phím S & Lưu đủ 30 ảnh, hệ thống tự thoát chế độ đăng ký & Pass \\ \hline
+TC02 & Huấn luyện mô hình LBPH & Ảnh mẫu 3 cư dân ($3 \times 30$ ảnh) & File \texttt{lbph\_model.yml} được tạo, log xác nhận & Pass \\ \hline
+TC03 & Cache model --- không train lại & Chạy lần 2, model còn mới & Chương trình tải model nhanh, không huấn luyện lại & Pass \\ \hline
+TC04 & Nhận diện cư dân hợp lệ & Khuôn mặt đã đăng ký & Khung xanh, hiển thị tên và tầng đích & Pass \\ \hline
+TC05 & Phát hiện người lạ & Khuôn mặt chưa đăng ký & Khung đỏ, cảnh báo ``Người lạ'', không kích hoạt thang & Pass \\ \hline
+TC06 & Giao diện thang máy mô phỏng & Nhận diện cư dân tầng 5 & Cửa mở, thang di chuyển lên tầng 5, cửa mở lại & Pass \\ \hline
+TC07 & Chống spam lệnh COM & Cư dân đứng lâu trước camera & Lệnh COM chỉ gửi đúng 1 lần, không lặp lại & Pass \\ \hline
+TC08 & Xử lý không có kết nối COM & Không cắm cáp COM3 & Hệ thống chạy chế độ DEMO, không bị treo & Pass \\ \hline
+TC09 & Thêm cư dân mới từ bàn phím & Bấm phím E khi đang chạy & Hệ thống mở chế độ đăng ký, huấn luyện lại sau đó & Pass \\ \hline
+TC10 & Đầu vào dữ liệu CSDL trống & Khởi động lần đầu, DB trống & Tự động thêm 3 cư dân mẫu và yêu cầu đăng ký mặt & Pass \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Kết quả đạt được cuối kỳ thực tập}
+
+\begin{itemize}
+    \item Hoàn thành dự án cá nhân đúng tiến độ 2 tuần; chương trình chạy ổn định và đáp ứng đầy đủ các yêu cầu chức năng đề ra.
+    \item Hệ thống nhận diện khuôn mặt đạt độ chính xác trên $92\%$ trong điều kiện ánh sáng ổn định trong nhà, vận hành ở tốc độ xấp xỉ 33 FPS.
+    \item Được Mentor tại VNPT-Media đánh giá cao về khả năng tự nghiên cứu công nghệ mới (OpenCV, SQLite3, Win32 API), tư duy thiết kế hệ thống OOP và kỹ năng debug con trỏ, bộ nhớ C++.
+    \item Hiểu rõ quy trình phát triển phần mềm chuyên nghiệp (SDLC): từ phân tích yêu cầu, thiết kế, lập trình, kiểm thử đến bàn giao sản phẩm trong môi trường doanh nghiệp thực tế.
+    \item Mã nguồn được tổ chức rõ ràng theo mô hình module hóa, có chú thích đầy đủ và dễ bảo trì, mở rộng.
+\end{itemize}
+
+\end{document}

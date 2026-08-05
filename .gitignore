@@ -1,0 +1,34 @@
+# Build directories
+build/
+*.exe
+*.o
+*.obj
+*.a
+*.lib
+
+# Python virtual environment
+docx_venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Compiled output
+*.out
+*.log
