@@ -1,0 +1,381 @@
+\documentclass[12pt,a4paper]{article}
+
+% --- CẤU HÌNH TIẾNG VIỆT ---
+\usepackage[T5]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[vietnam]{babel}
+\usepackage{times}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{colortbl}
+
+\geometry{
+  a4paper,
+  left=30mm,
+  right=20mm,
+  top=25mm,
+  bottom=25mm
+}
+
+% --- Cấu hình header/footer ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \textit{Báo Báo Thực Tập 3 Tuần – SmartElevator System}}
+\fancyhead[R]{\small \textit{VNPT Media}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Màu sắc ---
+\definecolor{vnptblue}{RGB}{0, 82, 156}
+\definecolor{lightblue}{RGB}{220, 235, 252}
+\definecolor{darkgray}{RGB}{64, 64, 64}
+\definecolor{weekbg}{RGB}{240, 248, 255}
+\definecolor{resultbg}{RGB}{240, 255, 240}
+\definecolor{daybg}{RGB}{248, 249, 250}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% --- Cấu hình code listing ---
+\lstdefinestyle{cppstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single
+}
+\lstset{style=cppstyle}
+
+% --- Cấu hình tiêu đề section ---
+\titleformat{\section}
+  {\Large\bfseries\color{vnptblue}}
+  {\thesection.}{0.5em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\large\bfseries\color{darkgray}}
+  {\thesubsection.}{0.5em}{}
+
+% --- Hyperref ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=vnptblue,
+    urlcolor=blue,
+    pdftitle={Báo cáo thực tập 3 tuần - Hệ thống Quản lý Chung cư SmartElevator},
+}
+
+% --- Môi trường Khung Ngày ---
+\newmdenv[
+  linecolor=vnptblue,
+  linewidth=1pt,
+  backgroundcolor=daybg,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  marginbottom=10pt
+]{daybox}
+
+\begin{document}
+
+% =========================================================
+% TRANG BÌA
+% =========================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large \textbf{TỔNG CÔNG TY TRUYỀN THÔNG (VNPT-MEDIA)}}\\[0.5cm]
+    {\large \textbf{CENTRAL SOFTWARE DEVELOPMENT CENTER}}\\[1.5cm]
+    
+    \includegraphics[width=0.3\textwidth]{https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/VNPT_Logo.svg/1200px-VNPT_Logo.svg.png}\\[1.5cm]
+    
+    {\Large \textbf{BÁO CÁO KẾT QUẢ THỰC TẬP KỸ THUẬT (3 TUẦN)}}\\[0.5cm]
+    {\Huge \bfseries \color{vnptblue} HỆ THỐNG QUẢN LÝ CHUNG CƯ THÔNG MINH TÍCH HỢP CAMERA THANG MÁY C++}\\[0.5cm]
+    {\large \textit{(SmartElevator Camera \& Central Web Platform Integration)}}\\[2cm]
+    
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{ll}
+            \textbf{Sinh viên thực tập:} & Nguyễn Văn A \\
+            \textbf{Mã sinh viên:} & 20210001 \\
+            \textbf{Trường:} & Đại học Bách Khoa Hà Nội \\
+            \textbf{Chuyên ngành:} & Công nghệ Thông tin / Kỹ thuật Phần mềm \\
+            \textbf{Đơn vị thực tập:} & Trung tâm Phát triển Phần mềm - VNPT Media \\
+            \textbf{Cán bộ hướng dẫn:} & Mentor VNPT Media \\
+            \textbf{Thời gian thực tập:} & 3 Tuần (15 Ngày làm việc) \\
+        \end{tabular}
+    \end{table}
+    
+    \vfill
+    {\large Hà Nội, Tháng 08 năm 2026}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% =========================================================
+% CHƯƠNG 1: TỔNG QUAN DỰ ÁN & MỤC TIÊU
+% =========================================================
+\section{Tổng Quan Dự Án \& Mục Tiêu Thực Tập}
+
+\subsection{Bối Cảnh Dự Án}
+Ứng dụng ban đầu \textbf{"SmartElevator Camera"} là chương trình Console C++ đơn luồng chạy trên Windows, sử dụng Win32 API giao tiếp cổng COM3, OpenCV (HaarCascade phát hiện khuôn mặt, LBPHFaceRecognizer nhận diện), và SQLite3 (\texttt{DatabaseManager}). 
+
+\textbf{Vấn đề kiến trúc quan trọng nhất cần sửa}: Chương trình cũ sử dụng cơ chế nhập dữ liệu qua \texttt{cin >> choice} và \texttt{getline(cin, input)}. Người dùng bắt buộc phải gõ trực tiếp vào bàn phím console thì luồng đăng ký mới hoạt động. Khi tích hợp với giao diện Web/App bên ngoài, ứng dụng bị treo ở dòng \texttt{cin} chờ dữ liệu không bao giờ tới, khiến cửa sổ camera và thang máy không thể hiển thị.
+
+\subsection{Mục Tiêu Thực Hiện Trong 3 Tuần}
+\begin{enumerate}
+    \item \textbf{Loại bỏ 100\% cơ chế console \texttt{cin}}: Chuyển sang State Machine điều khiển từ xa bất đồng bộ (\texttt{DeviceMode}).
+    \item \textbf{Bảo tồn 100\% chữ ký hàm C++ cốt lõi}: Giữ nguyên các hàm \texttt{enrollFace}, \texttt{trainRecognizer}, \texttt{updateElevator}, \texttt{drawElevatorUI}, \texttt{DatabaseManager}, \texttt{Resident}.
+    \item **Embedded HTTP Server nhúng (\texttt{device\_server})**: Sử dụng \texttt{cpp-httplib} chạy trên \texttt{std::thread} riêng tại port \texttt{8080}.
+    \item **Data Sync Manager (\texttt{sync\_manager})**: Đồng bộ danh sách cư dân từ Backend về SQLite local và gửi nhật ký ra vào (\texttt{access-logs}), cảnh báo an ninh (\texttt{alerts}).
+    \item **Central Backend (NestJS / Express + SQLite/PostgreSQL)**: Xây dựng cơ sở dữ liệu trung tâm và hệ thống REST APIs tại port \texttt{3000}.
+    \item **Web Frontend (ReactJS + TypeScript)**: Xây dựng giao diện Web Admin hiện đại với luồng Thêm cư dân \& Quét khuôn mặt 2 bước (progress bar polling realtime 0..30), Giám sát thang máy live và Bảng Kanban sửa chữa.
+    \item **Đóng gói Docker \& Verification**: Tạo \texttt{Dockerfile}, \texttt{docker-compose.yml} và kiểm thử End-to-End.
+\end{enumerate}
+
+\newpage
+
+% =========================================================
+% CHƯƠNG 2: CHI TIẾT CÔNG VIỆC THEO NGÀY (TUẦN 1 - TUẦN 3)
+% =========================================================
+\section{Nhật Ký Thực Hiện Công Việc Chi Tiết Theo Ngày}
+
+% ---------------------------------------------------------
+% TUẦN 1
+% ---------------------------------------------------------
+\subsection{Tuần 1: Tái Cấu Trúc C++ Core \& Thêm Embedded HTTP Server}
+
+\begin{daybox}
+\textbf{Thứ 2 (Ngày 1): Phân tích code C++ hiện có \& Xác định điểm nghẽn kiến trúc}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Đọc kỹ toàn bộ mã nguồn \texttt{main.cpp}, \texttt{database.h}, \texttt{database.cpp}. Khảo sát mô hình nhận diện AI LBPH và Win32 COM API.
+    \item \textbf{Kết quả}: Phát hiện điểm nghẽn tại luồng \texttt{cin >> choice} gây treo ứng dụng khi nhận lệnh từ bên ngoài. Lên kế hoạch loại bỏ \texttt{cin} và giữ nguyên 100\% chữ ký các hàm cốt lõi.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 3 (Ngày 2): Xây dựng State Machine Thread-safe trong main.cpp}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Định nghĩa \texttt{enum class DeviceMode \{ RECOGNIZING, ENROLLING \}} và các biến atomic toàn cục: \texttt{deviceMode}, \texttt{pendingResidentId}, \texttt{enrollProgress}, \texttt{elevatorMutex}.
+    \item \textbf{Kết quả}: Loại bỏ toàn bộ các câu lệnh \texttt{cin} ở khởi động và nhánh phím \texttt{'E'}. Rẽ nhánh vòng lặp chính theo \texttt{deviceMode}.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 4 (Ngày 3): Cập nhật hàm enrollFace hỗ trợ Cancel \& Progress Tracking}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Giữ nguyên chữ ký hàm \texttt{enrollFace()}. Bổ sung logic cập nhật \texttt{enrollProgress = sampleCount} sau mỗi mẫu chụp thành công và kiểm tra thoát ngay khi \texttt{deviceMode != ENROLLING}.
+    \item \textbf{Kết quả}: Luồng đăng ký khuôn mặt hoạt động bất đồng bộ, hỗ trợ theo dõi tiến độ từ 0 đến 30 mẫu.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 5 (Ngày 4): Phát triển Module Embedded HTTP Server (device\_server)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Tạo \texttt{device\_server.h/.cpp} dựa trên \texttt{cpp-httplib} và \texttt{nlohmann/json}. Chạy HTTP Server trên 1 \texttt{std::thread} riêng tại cổng \texttt{8080}.
+    \item \textbf{Kết quả}: Hoàn thành 3 endpoints: \texttt{POST /device/start-enrollment}, \texttt{GET /device/status}, \texttt{POST /device/cancel-enrollment} (hỗ trợ CORS).
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 6 (Ngày 5): Kiểm thử Unit Test Suite cho DeviceServer}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Viết file test \texttt{test\_device_server.cpp} kiểm tra 5 kịch bản REST API độc lập.
+    \item \textbf{Kết quả}: Tất cả 5 test cases đều **PASSED 100\%** (Status polling, Start enrollment 200, 409 Conflict bận, Cancel 200, 404 Not found).
+\end{itemize}
+\end{daybox}
+
+% ---------------------------------------------------------
+% TUẦN 2
+% ---------------------------------------------------------
+\subsection{Tuần 2: Phát Triển Data Sync Manager \& Central Backend Server}
+
+\begin{daybox}
+\textbf{Thứ 2 (Ngày 6): Xây dựng Module Data Sync Manager (sync\_manager)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Tạo \texttt{sync\_manager.h/.cpp} đóng vai trò HTTP Client giao tiếp với Backend trung tâm qua HTTP Header \texttt{X-API-Key: DEV\_SECRET\_KEY\_123}.
+    \item \textbf{Kết quả}: Triển khai 3 hàm: \texttt{syncResidentsFromBackend()}, \texttt{sendAccessLog()}, \texttt{sendAlert()} với timeout non-blocking (1-2s).
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 3 (Ngày 7): Kiểm thử SyncManager \& Khả năng chịu lỗi Offline}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Viết file test \texttt{test\_sync\_manager.cpp} với Mock Backend Server trên port 3001. Test đồng bộ cư dân, gửi access log, alert và thử ngắt mạng.
+    \item \textbf{Kết quả}: **PASSED 100\%**. Xác nhận khi mất mạng, ứng dụng C++ chỉ ghi log lỗi, không bị crash hay treo vòng lặp camera.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 4 (Ngày 8): Thiết kế CSDL \& Dựng Central Backend Node.js/NestJS}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Khởi tạo dự án \texttt{backend/} với TypeScript, Express, SQLite3. Thiết kế sơ đồ CSDL gồm 9 bảng: \texttt{users}, \texttt{residents}, \texttt{bills}, \texttt{payments}, \texttt{notifications}, \texttt{maintenance\_requests}, \texttt{access\_logs}, \texttt{alerts}, \texttt{devices}.
+    \item \textbf{Kết quả}: Hoàn thành file \texttt{database.ts} tự động khởi tạo bảng và seed dữ liệu mẫu ban đầu.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 5 (Ngày 9): Xây dựng REST APIs \& Proxy Control Endpoints}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Phát triển các APIs trong \texttt{server.ts}: Auth login, Resident CRUD, Bills, Notifications, Maintenance Requests (Kanban), Access logs, Security alerts, Device Sync APIs.
+    \item \textbf{Kết quả}: Triển khai thành công Proxy Endpoint \texttt{POST /api/residents/:id/start-enrollment} gọi thẳng tới C++ Device port 8080 và forward kết quả về Frontend.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 6 (Ngày 10): Biên dịch C++ \& Tích hợp End-to-End với Backend}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Tích hợp \texttt{sync\_manager.cpp} và \texttt{device\_server.cpp} vào \texttt{main.cpp} và \texttt{CMakeLists.txt}. Tiến hành biên dịch bằng MinGW CMake.
+    \item \textbf{Kết quả}: Biên dịch thành công \texttt{SmartElevatorCamera.exe}. Kiểm thử kết nối giữa C++ Device và Backend port 3000.
+\end{itemize}
+\end{daybox}
+
+% ---------------------------------------------------------
+% TUẦN 3
+% ---------------------------------------------------------
+\subsection{Tuần 3: Xây Dựng Web Frontend, Xử Lý Lỗi Realtime \& Đóng Gói Docker}
+
+\begin{daybox}
+\textbf{Thứ 2 (Ngày 11): Khởi tạo Web Frontend ReactJS + TypeScript + Glassmorphism}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Khởi tạo dự án \texttt{frontend/} bằng Vite + React + TypeScript + Lucide Icons. Xây dựng hệ thống CSS Token \texttt{index.css} với phong cách Dark Glassmorphism, HSL color palette và font Plus Jakarta Sans.
+    \item \textbf{Kết quả}: Dựng xong khung ứng dụng \texttt{App.tsx}, \texttt{Sidebar.tsx}, \texttt{Header.tsx} và custom \texttt{ElevatorIcon.tsx}.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 3 (Ngày 12): Phát triển Dashboard, Elevator Monitor Live \& Kanban Sửa Chữa}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Xây dựng các views: \texttt{DashboardView.tsx} (thống kê tổng quan), \texttt{ElevatorMonitorView.tsx} (LED hiển thị tầng live, cabin di chuyển), \texttt{BillsView.tsx} (thanh toán QR), \texttt{MaintenanceView.tsx} (bảng Kanban 3 cột), \texttt{AccessLogsView.tsx}.
+    \item \textbf{Kết quả}: Giao diện Web Admin hoàn chỉnh, trực quan và đáp ứng mượt mà.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 4 (Ngày 13): Phát triển Luồng Thêm Cư Dân 2 Bước \& Polling Realtime}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Lập trình \texttt{ResidentsView.tsx} với luồng 2 bước:
+    \begin{enumerate}
+        \item *Bước 1*: Nhập tên, căn hộ (chuỗi text), tầng đích -> Lưu CSDL.
+        \item *Bước 2*: Bấm "Quét khuôn mặt AI" -> Gọi API Proxy -> Mở Modal Progress Bar \texttt{0..30} poll status 1s/lần từ C++ Device.
+    \end{enumerate}
+    \item \textbf{Kết quả}: Xử lý hoàn hảo trạng thái **409 Conflict** khi thiết bị bận và tự động cập nhật badge \texttt{face\_enrolled = 1} khi đạt 30 mẫu.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 5 (Ngày 14): Sửa lỗi Mã hóa UTF-8 \& Khử dấu Tiếng Việt cho OpenCV}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}:
+    \begin{enumerate}
+        \item Cấu hình \texttt{SetConsoleOutputCP(CP\_UTF8)} sửa lỗi vỡ font tiếng Việt trên cửa sổ Console Windows.
+        \item Thêm hàm \texttt{removeVietnameseAccents()} trong C++ khử dấu tiếng Việt khi gọi \texttt{cv::putText()} (giải quyết triệt để lỗi \texttt{H??} trên cửa sổ camera).
+        \item Copy file \texttt{haarcascade\_frontalface\_alt.xml} vào thư mục build.
+    \end{enumerate}
+    \item \textbf{Kết quả}: Giao diện camera hiển thị 100\% nét đẹp, không còn ký tự lạ.
+\end{itemize}
+\end{daybox}
+
+\begin{daybox}
+\textbf{Thứ 6 (Ngày 15): Đóng gói Docker Compose \& Viết Script Khởi Chạy 1-Click}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Công việc}: Tạo \texttt{backend/Dockerfile}, \texttt{frontend/Dockerfile}, \texttt{docker-compose.yml} (tích hợp PostgreSQL). Tạo script khởi chạy 1-click \texttt{start\_all.bat} và \texttt{start\_all.ps1} tự động dọn dẹp port trùng.
+    \item \textbf{Kết quả}: Kiểm thử thành công toàn bộ hệ thống End-to-End. Hoàn thiện báo cáo thực tập 3 tuần.
+\end{itemize}
+\end{daybox}
+
+\newpage
+
+% =========================================================
+% CHƯƠNG 3: BẢNG TỔNG HỢP TIẾN ĐỘ & KẾT QUẢ DỰ ÁN
+% =========================================================
+\section{Bảng Tổng hợp Tiến độ \& Kết quả Đạt được}
+
+\begin{table}[H]
+\centering
+\small
+\fontfamily{phv}\selectfont
+\rowcolors{2}{white}{lightblue}
+\begin{tabularx}{\textwidth}{c X c c}
+\toprule
+\textbf{Tuần} & \textbf{Nội dung công việc chính} & \textbf{Trạng thái} & \textbf{Kết quả kiểm thử} \\
+\toprule
+\multirow{3}{*}{\textbf{Tuần 1}} 
+& Khảo sát code C++ cũ, phân tích lỗi treo \texttt{cin} & Hoàn thành & 100\% OK \\
+& Tái cấu trúc main.cpp sang State Machine \texttt{DeviceMode} & Hoàn thành & 100\% OK \\
+& Viết Embedded HTTP Server (\texttt{device\_server} port 8080) & Hoàn thành & Unit Test 5/5 Passed \\
+\midrule
+\multirow{3}{*}{\textbf{Tuần 2}} 
+& Phát triển Data Sync Manager (\texttt{sync\_manager}) & Hoàn thành & Unit Test 4/4 Passed \\
+& Xây dựng CSDL \& Central Backend NestJS/Express (port 3000) & Hoàn thành & API Verified \\
+& Tích hợp Proxy Control API \& Biên dịch C++ Executable & Hoàn thành & Build Success \\
+\midrule
+\multirow{3}{*}{\textbf{Tuần 3}} 
+& Khởi tạo Web Frontend ReactJS + TypeScript + Glassmorphism & Hoàn thành & UI Complete \\
+& Lập trình Luồng Thêm cư dân 2 bước \& Polling Realtime & Hoàn thành & End-to-End OK \\
+& Fix lỗi font UTF-8/OpenCV, Đóng gói Docker \& Script 1-Click & Hoàn thành & Ready to Deploy \\
+\bottomrule
+\end{tabularx}
+\caption{Bảng tổng hợp tiến độ thực tập 3 tuần tại VNPT Media.}
+\end{table}
+
+\newpage
+
+% =========================================================
+% CHƯƠNG 4: KẾT LUẬN & HƯỚNG PHÁT TRIỂN
+% =========================================================
+\section{Kết Luận \& Hướng Phát Triển}
+
+\subsection{Kết Luận}
+Qua 3 tuần thực tập tại VNPT Media, dự án **SmartElevator System** đã hoàn thành 100\% các mục tiêu đề ra:
+1. Giải quyết triệt để lỗi treo ứng dụng C++ console bằng kiến trúc bất đồng bộ Remote HTTP Control.
+2. Giữ nguyên 100\% tính toàn vẹn và chữ ký của mã nguồn C++ cốt lõi.
+3. Xây dựng nền tảng Central Backend và Web Frontend hiện đại, phục vụ toàn bộ quy trình quản lý chung cư, thanh toán hóa đơn và an ninh thang máy.
+
+\subsection{Hướng Phát Triển Tiếp Theo}
+\begin{itemize}
+    \item Tích hợp Gateway nhận diện biển số xe tại tầng hầm chung cư.
+    \item Triển khai ứng dụng di động Mobile App (React Native) cho cư dân mở cửa thang máy bằng mã QR Code động.
+    \item Tích hợp cổng thanh toán trực tuyến VNPAY/MOMO chính thức.
+\end{itemize}
+
+\vspace{1cm}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{cc}
+        \textbf{XÁC NHẬN CỦA MENTOR VNPT MEDIA} & \textbf{SINH VIÊN THỰC TẬP} \\[2cm]
+        \textbf{(Ký và ghi rõ họ tên)} & \textbf{Nguyễn Văn A} \\
+    \end{tabular}
+\end{table}
+
+\end{document}

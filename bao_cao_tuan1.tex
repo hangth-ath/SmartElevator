@@ -1,0 +1,161 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage[left=3.00cm, right=2.00cm, top=2.50cm, bottom=2.50cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usetikzlibrary{calc}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small{\textit{Báo cáo thực tập tuần 1}}}
+\lfoot{\small{Sinh viên thực hiện: Nguyễn Thanh Hà}}
+\rfoot{\thepage}
+
+\titleformat{\section}{\normalfont\fontsize{14}{17}\bfseries\selectfont\color{black}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{15}\bfseries\selectfont\color{black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{15}\itshape\selectfont\color{black}}{\thesubsubsection}{1em}{}
+
+\lstdefinestyle{cppstyle}{
+    backgroundcolor=\color{gray!10},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=5pt,
+    frame=single
+}
+\lstset{style=cppstyle}
+
+\begin{document}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 1.5pt] ($(current page.north west) + (3.0cm,-2.0cm)$) rectangle ($(current page.south east) + (-1.5cm,2.0cm)$);
+  \draw[line width = 0.5pt] ($(current page.north west) + (3.1cm,-2.1cm)$) rectangle ($(current page.south east) + (-1.6cm,2.1cm)$);
+\end{tikzpicture}
+
+\begin{center}
+    \textbf{\fontsize{14}{17}\selectfont Trường Đại học Công nghệ} \\
+    \textbf{\fontsize{12}{15}\selectfont Khoa Điện tử Viễn thông} \\
+    
+    \vspace{2.5cm}
+    \textbf{\fontsize{18}{22}\selectfont BÁO CÁO THỰC TẬP TUẦN 1} \\[0.5cm]
+    \textbf{\fontsize{13}{16}\selectfont ĐỀ TÀI: GIẢ LẬP HỆ THỐNG THANG MÁY THÔNG MINH} \\
+    \textbf{\fontsize{13}{16}\selectfont TÍCH HỢP NHẬN DIỆN KHUÔN MẶT AI \& CSDL SQLITE} \\
+    
+    \vspace{3.5cm}
+    \fontsize{12}{15}\selectfont
+    \begin{tabular}{ll}
+        Sinh viên thực hiện: & \textbf{Nguyễn Thanh Hà} \\
+        Mã số sinh viên: & \textbf{23021810} \\
+        Lớp: & \textbf{K68E-EC1} \\
+        Người hướng dẫn: & \textbf{Hồ Sỹ Minh} \\
+    \end{tabular}
+    
+    \vfill
+    \textbf{Hà Nội, 2026}
+\end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ==================== CHƯƠNG 1 ====================
+\section{KẾ HOẠCH CHI TIẾT TUẦN 1}
+Mục tiêu chính của Tuần 1 là thiết lập môi trường phát triển C++, xây dựng cơ sở dữ liệu SQLite3, thuật toán nhận diện khuôn mặt LBPH, máy trạng thái mô phỏng thang máy 7 bước và giao tiếp Win32 Serial COM3.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Thời gian} & \textbf{Nội dung công việc thực hiện} & \textbf{Kết quả / Sản phẩm} \\ \hline
+Thứ Hai & Cài đặt môi trường MSYS2/UCRT64, OpenCV 4.x, SQLite3, viết tệp \texttt{CMakeLists.txt}. & Môi trường biên dịch C++17 hoạt động ổn định. \\ \hline
+Thứ Ba & Lập trình module \texttt{DatabaseManager} (\texttt{database.h/.cpp}): kết nối SQLite, tạo bảng \texttt{residents}. & Module lưu trữ thông tin cư dân và đường dẫn ảnh mẫu. \\ \hline
+Thứ Tư & Lập trình nhận diện AI: \texttt{enrollFace()}, \texttt{trainRecognizer()}, \texttt{isModelUpToDate()}. & Thu thập 30 ảnh mẫu, huấn luyện và lưu mô hình LBPH \texttt{.yml}. \\ \hline
+Thứ Năm & Lập trình máy trạng thái thang máy (7 trạng thái) và vẽ giao diện đồ họa OpenCV \texttt{drawElevatorUI()}. & Giao diện mô phỏng cabin, cửa trượt, LED hiển thị tầng mượt mà. \\ \hline
+Thứ Sáu & Tích hợp cổng Win32 COM3 điều khiển phần cứng và kiểm thử nghiệm thu Tuần 1. & Nhận diện mặt thành công -> tự động gửi byte mã tầng qua COM. \\ \hline
+\end{tabularx}
+\caption{Phân bổ lịch trình công việc Tuần 1}
+\end{table}
+
+\section{NỘI DUNG VÀ KẾT QUẢ THỰC HIỆN CHI TIẾT}
+
+\subsection{Thứ Hai — Cấu hình môi trường và CMakeLists.txt}
+Khởi tạo cấu hình biên dịch CMake C++17 tự động tìm kiếm thư viện OpenCV và SQLite3:
+\begin{lstlisting}[language=C++]
+cmake_minimum_required(VERSION 3.10)
+project(SmartElevatorCamera)
+set(CMAKE_CXX_STANDARD 17)
+find_package(OpenCV REQUIRED)
+find_package(SQLite3 REQUIRED)
+add_executable(SmartElevatorCamera main.cpp database.cpp)
+target_link_libraries(SmartElevatorCamera ${OpenCV_LIBS} ${SQLite3_LIBRARIES})
+\end{lstlisting}
+
+\subsection{Thứ Ba — Lập trình Module DatabaseManager}
+Xây dựng lớp \texttt{DatabaseManager} phụ trách lưu trữ thông tin cư dân gồm: \texttt{id}, \texttt{name}, \texttt{apartment}, \texttt{target_floor}. Tự động tạo thư mục \texttt{faces/resident_<id>/} để lưu ảnh huấn luyện.
+
+\subsection{Thứ Tư — Lập trình Nhận diện Khuôn mặt AI (OpenCV LBPH)}
+Sử dụng thuật toán LBPH (\textit{Local Binary Patterns Histograms}) với ngưỡng \texttt{RECOGNITION\_THRESHOLD = 80.0}.
+\begin{itemize}
+    \item \texttt{enrollFace()}: Thu thập đủ 30 ảnh mẫu khuôn mặt grayscale $100 \times 100$ px.
+    \item \texttt{trainRecognizer()}: Huấn luyện và lưu ra file \texttt{lbph_model.yml}.
+    \item \texttt{isModelUpToDate()}: Kích hoạt cache mô hình, tránh huấn luyện lại nếu không có ảnh mới.
+\end{itemize}
+
+\subsection{Thứ Năm — Máy trạng thái Thang máy và Giao diện OpenCV UI}
+Cấu trúc \texttt{ElevatorState} bao gồm 7 trạng thái chuyển đổi liên tục:
+\texttt{ELEVATOR_IDLE} $\rightarrow$ \texttt{DOOR_OPENING_BEFORE} $\rightarrow$ \texttt{BOARDING} $\rightarrow$ \texttt{DOOR_CLOSING_BEFORE} $\rightarrow$ \texttt{MOVING} $\rightarrow$ \texttt{ARRIVED} $\rightarrow$ \texttt{DOOR_CLOSING_AFTER}.
+
+Hàm \texttt{drawElevatorUI()} vẽ giao diện cabin mô phỏng 2D trực quan bằng OpenCV với LED hiển thị tầng, cánh cửa trượt động và ảnh cư dân trong cabin.
+
+\subsection{Thứ Sáu — Tích hợp Cổng COM Win32 API \& Đánh giá Tuần 1}
+Tích hợp giao tiếp Win32 \texttt{CreateFileA("\\\\.\\COM3")}. Khi AI xác thực đúng cư dân, lệnh gửi byte mã tầng (ví dụ \texttt{'5'}) được truyền qua COM3 tới mạch phần cứng thang máy.
+
+\section{KẾT QUẢ KIỂM THỬ ĐƠN VỊ (UNIT TEST)}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|c|}
+\hline
+\textbf{Mã TC} & \textbf{Mục tiêu kiểm thử} & \textbf{Kết quả mong đợi} & \textbf{Trạng thái} \\ \hline
+TC01 & Thu thập ảnh khuôn mặt 30 mẫu & Lưu đủ 30 ảnh vào thư mục faces & Pass \\ \hline
+TC02 & Huấn luyện mô hình LBPH & Tạo file \texttt{lbph_model.yml} thành công & Pass \\ \hline
+TC03 & Nhận diện cư dân hợp lệ & Khung xanh, hiển thị tên và tầng đích & Pass \\ \hline
+TC04 & Phát hiện người lạ & Khung đỏ, hiển thị "Người lạ", không kích hoạt thang & Pass \\ \hline
+TC05 & Gửi tín hiệu COM3 & Gửi đúng 1 byte mã tầng khi thang IDLE & Pass \\ \hline
+\end{tabularx}
+\caption{Bảng kết quả kiểm thử đơn vị Tuần 1}
+\end{table}
+
+\section{ĐÁNH GIÁ TIẾN ĐỘ TUẦN 1}
+Hoàn thành 100\% mục tiêu đặt ra cho Tuần 1. Hệ thống C++ hoạt động ổn định, nhận diện chính xác và điều khiển mô phỏng thang máy qua cổng COM3.
+Mã nguồn Github: \url{https://github.com/hangth-ath/SmartElevator.git}
+
+\end{document}

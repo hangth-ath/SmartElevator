@@ -1,34 +1,72 @@
-# Build directories
+# ============================================================
+# BUILD & COMPILED OUTPUT
+# ============================================================
 build/
 *.exe
 *.o
 *.obj
 *.a
 *.lib
+*.out
+*.log
 
-# Python virtual environment
+# CMake generated
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# ============================================================
+# NODE.JS
+# ============================================================
+node_modules/
+node-bin/
+
+# Frontend build output (người dùng tự chạy npm run build)
+frontend/dist/
+
+# Backend compiled output (người dùng tự chạy npm run build)
+backend/dist/
+
+# ============================================================
+# DATABASE FILES (chứa dữ liệu cá nhân, tự sinh khi chạy)
+# ============================================================
+*.db
+*.db-shm
+*.db-wal
+
+# ============================================================
+# AI MODEL & FACE DATA (tự sinh sau khi đăng ký khuôn mặt)
+# ============================================================
+lbph_model.yml
+faces/
+faces_sync_test/
+faces_test/
+
+# ============================================================
+# PYTHON
+# ============================================================
 docx_venv/
 __pycache__/
 *.py[cod]
 *$py.class
 
-# IDE
+# ============================================================
+# IDE & EDITOR
+# ============================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
+# ============================================================
 # OS
+# ============================================================
 .DS_Store
 Thumbs.db
 
-# CMake
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-
-# Compiled output
-*.out
-*.log
+# ============================================================
+# TEST EXECUTABLES
+# ============================================================
+test_*.exe

@@ -1,0 +1,283 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage[left=3.00cm, right=2.00cm, top=2.50cm, bottom=2.50cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usetikzlibrary{calc}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small{\textit{Báo cáo thực tập tuần 4}}}
+\lfoot{\small{Sinh viên thực hiện: Nguyễn Thanh Hà}}
+\rfoot{\thepage}
+
+\titleformat{\section}{\normalfont\fontsize{14}{17}\bfseries\selectfont\color{black}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{15}\bfseries\selectfont\color{black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{15}\itshape\selectfont\color{black}}{\thesubsubsection}{1em}{}
+
+\lstdefinestyle{cppstyle}{
+    backgroundcolor=\color{gray!10},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=5pt,
+    frame=single
+}
+\lstset{style=cppstyle}
+
+\begin{document}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 1.5pt] ($(current page.north west) + (3.0cm,-2.0cm)$) rectangle ($(current page.south east) + (-1.5cm,2.0cm)$);
+  \draw[line width = 0.5pt] ($(current page.north west) + (3.1cm,-2.1cm)$) rectangle ($(current page.south east) + (-1.6cm,2.1cm)$);
+\end{tikzpicture}
+
+\begin{center}
+    \textbf{\fontsize{14}{17}\selectfont TRƯỜNG ĐẠI HỌC CÔNG NGHỆ} \\
+    \textbf{\fontsize{12}{15}\selectfont ĐẠI HỌC QUỐC GIA HÀ NỘI} \\
+    
+    \vspace{2.5cm}
+    \textbf{\fontsize{18}{22}\selectfont BÁO CÁO THỰC TẬP TUẦN 4} \\[0.5cm]
+    \textbf{\fontsize{13}{16}\selectfont ĐỀ TÀI: THIẾT KẾ CSDL TRUNG TÂM \& PHÁT TRIỂN} \\
+    \textbf{\fontsize{13}{16}\selectfont CENTRAL BACKEND SERVER (NESTJS / EXPRESS TYPESCRIPT)} \\
+    
+    \vspace{3.5cm}
+    \fontsize{12}{15}\selectfont
+    \begin{tabular}{ll}
+        Sinh viên thực hiện: & \textbf{Nguyễn Thanh Hà} \\
+        Mã số sinh viên: & \textbf{23021810} \\
+        Lớp: & \textbf{K68E-EC1} \\
+        Người hướng dẫn: & \textbf{Hồ Sỹ Minh} \\
+        Giáo viên hướng dẫn: & \textbf{Nguyễn Hồng Thịnh} \\
+    \end{tabular}
+    
+    \vfill
+    \textbf{Hà Nội, 2026}
+\end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ==================== CHƯƠNG 1 ====================
+\section{MỤC TIÊU VÀ KẾ HOẠCH CHI TIẾT TUẦN 4}
+Mục tiêu chính của Tuần 4 là xây dựng ứng dụng Central Backend Server (NestJS / Express + TypeScript) đóng vai trò trung tâm điều hành toàn bộ hệ thống quản lý chung cư, quản lý CSDL trung tâm 9 bảng, cung cấp REST APIs cho Web Frontend và Proxy Control APIs kết nối tới các thiết bị biên C++.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Thời gian} & \textbf{Nội dung công việc thực hiện} & \textbf{Kết quả / Sản phẩm yêu cầu} \\ \hline
+\textbf{Thứ Hai} & Khởi tạo dự án \texttt{backend/} với Node.js, Express/NestJS, TypeScript. Thiết kế sơ đồ CSDL quan hệ 9 bảng chi tiết. & Cấu hình môi trường Backend và file \texttt{package.json} sẵn sàng. \\ \hline
+\textbf{Thứ Ba} & Lập trình module \texttt{database.ts} quản lý kết nối SQLite/PostgreSQL, tự động tạo 9 bảng và seed dữ liệu ban đầu. & Các bảng CSDL trung tâm khởi tạo chuẩn hóa. \\ \hline
+\textbf{Thứ Tư} & Phát triển REST APIs quản lý Cư dân, Hóa đơn dịch vụ, Thông báo bảng tin và Bảng Kanban sửa chữa kỹ thuật. & Hệ thống APIs phục vụ Web Admin hoạt động mượt mà. \\ \hline
+\textbf{Thứ Năm} & Lập trình Proxy Endpoints: \texttt{POST /api/residents/:id/start-enrollment} chuyển tiếp tới C++ Device port 8080. & Kết nối cầu nối giữa Web Frontend và C++ Camera Device. \\ \hline
+\textbf{Thứ Sáu} & Lập trình Device Sync APIs (\texttt{GET /api/device/residents}, \texttt{POST /api/device/access-logs}, \texttt{POST /api/device/alerts}). & Tích hợp xác thực bảo mật HTTP Header \texttt{X-API-Key}. \\ \hline
+\end{tabularx}
+\caption{Phân bổ lịch trình công việc Tuần 4}
+\end{table}
+
+\newpage
+
+% ==================== CHƯƠNG 2 ====================
+\section{NỘI DUNG VÀ KẾT QUẢ THỰC HIỆN CHI TIẾT}
+
+\subsection{Thứ Hai — Thiết kế CSDL Trung tâm 9 Bảng (Relational Schema)}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Thiết kế kiến trúc CSDL quan hệ cho hệ thống quản lý chung cư thông minh gồm 9 bảng chức năng:
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+1. users (id, username, password_hash, full_name, role)
+2. residents (id, name, apartment, target_floor, face_enrolled)
+3. bills (id, apartment, title, amount, month, status, due_date)
+4. payments (id, bill_id, amount, payment_method, transaction_id, created_at)
+5. notifications (id, title, content, type, created_at)
+6. maintenance_requests (id, title, apartment, description, priority, status)
+7. access_logs (id, resident_id, resident_name, apartment, floor, timestamp)
+8. alerts (id, device_id, reason, timestamp)
+9. devices (id, name, ip_address, status, last_ping)
+\end{lstlisting}
+
+\subsection{Thứ Ba — Lập trình Data Access Layer \& Seeding (database.ts)}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Lập trình module \texttt{database.ts} kết nối CSDL, tự động chạy DDL tạo bảng và chèn sẵn dữ liệu mẫu (Seeding) khi khởi chạy ứng dụng:
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+import sqlite3 from 'sqlite3';
+
+export const db = new sqlite3.Database('./central_system.db');
+
+export const initDatabase = () => {
+    db.serialize(() => {
+        // Tao bang residents
+        db.run(`CREATE TABLE IF NOT EXISTS residents (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            apartment TEXT NOT NULL,
+            target_floor INTEGER NOT NULL,
+            face_enrolled INTEGER DEFAULT 0
+        )`);
+        
+        // Seed du lieu mau ban dau
+        db.get(`SELECT COUNT(*) as count FROM residents`, (err, row: any) => {
+            if (row.count === 0) {
+                db.run(`INSERT INTO residents (name, apartment, target_floor, face_enrolled) VALUES 
+                    ('Nguyen Van A', 'P502', 5, 1),
+                    ('Tran Thi B', 'P804', 8, 1),
+                    ('Le Van C', 'P1005', 10, 0);`);
+            }
+        });
+    });
+};
+\end{lstlisting}
+
+\subsection{Thứ Tư — Phát triển RESTful APIs Nghiệp vụ Server (server.ts)}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Lập trình bộ REST APIs phục vụ quản trị ứng dụng chung cư tại cổng \texttt{3000}:
+    \begin{enumerate}
+        \item \texttt{GET /api/residents}: Lấy danh sách tất cả cư dân.
+        \item \texttt{POST /api/residents}: Tạo cư dân mới (bước 1 của luồng đăng ký).
+        \item \texttt{DELETE /api/residents/:id}: Xóa cư dân khỏi CSDL.
+        \item \texttt{GET /api/bills}, \texttt{POST /api/bills/:id/pay}: Quản lý và thanh toán hóa đơn.
+        \item \texttt{GET /api/maintenance}, \texttt{PATCH /api/maintenance/:id/status}: Quản lý bảng Kanban phản ánh sửa chữa (PENDING $\rightarrow$ IN\_PROGRESS $\rightarrow$ COMPLETED).
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Thứ Năm — Phát triển Proxy Control Endpoints tới C++ Device}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Xây dựng các API chuyển tiếp (Proxy) để Web Frontend có thể tương tác với C++ Edge Device mà không bị chặn bởi CORS hay địa chỉ mạng nội bộ:
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+// Proxy Endpoint kich hoat Dang ky khuon mat tren C++ Device (Port 8080)
+app.post('/api/residents/:id/start-enrollment', async (req, res) => {
+    const residentId = parseInt(req.params.id);
+    try {
+        const deviceRes = await axios.post(`${DEVICE_IP}/device/start-enrollment`, { residentId });
+        return res.status(deviceRes.status).json(deviceRes.data);
+    } catch (error: any) {
+        if (error.response) {
+            return res.status(error.response.status).json(error.response.data);
+        }
+        return res.status(500).json({ error: 'Device unreachable' });
+    }
+});
+
+// Proxy Endpoint kiem tra tien do Enrollment (0..30)
+app.get('/api/residents/:id/enrollment-status', async (req, res) => {
+    try {
+        const statusRes = await axios.get(`${DEVICE_IP}/device/status`);
+        return res.json(statusRes.data);
+    } catch (error) {
+        return res.status(500).json({ mode: 'OFFLINE', enrollProgress: 0 });
+    }
+});
+\end{lstlisting}
+
+\subsection{Thứ Sáu — Device Sync APIs \& Bảo mật Header X-API-Key}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Xây dựng middleware xác thực và các API đồng bộ dành riêng cho C++ Device:
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+// Middleware kiem tra HTTP Header X-API-Key
+const authenticateDevice = (req, res, next) => {
+    const apiKey = req.headers['x-api-key'];
+    if (apiKey !== 'DEV_SECRET_KEY_123') {
+        return res.status(401).json({ error: 'Unauthorized device' });
+    }
+    next();
+};
+
+app.get('/api/device/residents', authenticateDevice, (req, res) => { ... });
+app.post('/api/device/access-logs', authenticateDevice, (req, res) => { ... });
+app.post('/api/device/alerts', authenticateDevice, (req, res) => { ... });
+\end{lstlisting}
+
+\newpage
+
+% ==================== CHƯƠNG 3 ====================
+\section{KẾT QUẢ KIỂM THỬ ĐƠN VỊ (UNIT TEST)}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|c|}
+\hline
+\textbf{Mã TC} & \textbf{Mục tiêu kiểm thử} & \textbf{Dữ liệu đầu vào \& Kịch bản} & \textbf{Trạng thái} \\ \hline
+TC01 & GET /api/residents & Gọi API lấy danh sách cư dân & Pass (200 OK) \\ \hline
+TC02 & POST /api/residents & Nhập {"name": "Test", "apartment": "P101", "target_floor": 1} & Pass (201 Created) \\ \hline
+TC03 & Proxy Start Enrollment (200) & Gọi API khi C++ Device rảnh (RECOGNIZING) & Pass (200 OK) \\ \hline
+TC04 & Proxy Start Enrollment (409) & Gọi API khi C++ Device đang bận (ENROLLING) & Pass (409 Conflict) \\ \hline
+TC05 & Cập nhật trạng thái Kanban & PATCH /api/maintenance/1 với status "IN_PROGRESS" & Pass (200 OK) \\ \hline
+TC06 & Device Sync API có X-API-Key & Gửi Header X-API-Key = DEV_SECRET_KEY_123 & Pass (200 OK) \\ \hline
+TC07 & Device Sync API sai X-API-Key & Gửi Header X-API-Key = INVALID_KEY & Pass (401 Unauthorized) \\ \hline
+\end{tabularx}
+\caption{Bảng tổng hợp kết quả kiểm thử đơn vị Tuần 4}
+\end{table}
+
+\section{MINH HỌA GIẠ DIỆN HỆ THỐNG BACKEND HOẠT ĐỘNG}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/dashboard.png}
+    \caption{Giao diện Dashboard Tổng Quan Hệ Thống — Hiển thị 4 thẻ thống kê (5 cư dân, 240 căn hộ, 145 triệu doanh thu, 5 cảnh báo), nhật ký ra vào thang máy và cảnh báo an ninh realtime từ Backend REST APIs (port 3000).}
+    \label{fig:dashboard}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/residents.png}
+    \caption{Giao diện Quản Lý Cư Dân — Danh sách cư dân với thông tin Căn Hộ, Tầng Đích và trạng thái Đã Đăng Ký AI / Chưa Có Khuôn Mặt, hỗ trợ luồng thêm cư dân 2 bước và quét AI từ giao diện Web Admin.}
+    \label{fig:residents}
+\end{figure}
+
+\section{ĐÁNH GIÁ TIẾN ĐỘ VÀ KẾ HOẠCH TUẦN TIẾP THEO}
+\begin{itemize}
+    \item \textbf{Đánh giá cá nhân}: Hoàn thành 100\% mục tiêu xây dựng Central Backend Server tại port 3000. Backend đóng vai trò cầu nối dữ liệu vững chắc giữa Web Admin UI và C++ Device.
+    \item \textbf{Vấn đề phát sinh \& cách xử lý}: Khi C++ Device chưa khởi động, Proxy Endpoint sẽ nhận lỗi \texttt{ECONNREFUSED}. Đã xử lý bằng cách bắt lỗi \texttt{try/catch} và trả về \texttt{500 Device unreachable} thay vì để server crash.
+    \item \textbf{Kế hoạch Tuần 5}: Xây dựng giao diện Web Frontend (ReactJS TypeScript Vite), lập trình luồng Thêm cư dân 2 bước realtime, fix lỗi font tiếng Việt và đóng gói Dockerization.
+\end{itemize}
+
+\vspace{1.5cm}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{p{7cm} p{7cm}}
+        \centering \textbf{XÁC NHẬN CỦA MENTOR} & \centering \textbf{SINH VIÊN THỰC TẬP} \\[3cm]
+        \centering \textbf{(Ký và ghi rõ họ tên)} & \centering \textbf{Nguyễn Thanh Hà} \\
+    \end{tabular}
+\end{table}
+
+\end{document}
+

@@ -198,20 +198,9 @@ std::vector<Resident> DatabaseManager::getAllResidents() {
 void DatabaseManager::printAllResidents() {
     auto list = getAllResidents();
     std::cout << "\n=============================================" << std::endl;
-    std::cout << "DANH SACH CU DAN TRONG CO SO DU LIEU:" << std::endl;
+    std::cout << "DANH SACH CU DAN TRONG CO SO DU LIEU (Dung template & nap chong):" << std::endl;
     std::cout << "---------------------------------------------" << std::endl;
-    if (list.empty()) {
-        std::cout << "(Chua co cu dan nao)" << std::endl;
-    } else {
-        for (const auto& r : list) {
-            int imgCount = getFaceImageCount(r.id);
-            std::cout << "ID: " << r.id
-                      << " | Ten: " << r.name
-                      << " | Phong: " << r.apartment
-                      << " | Tang: " << r.targetFloor
-                      << " | Anh khuon mat: " << imgCount << " mau" << std::endl;
-        }
-    }
+    printDataList(list);
     std::cout << "=============================================\n" << std::endl;
 }
 

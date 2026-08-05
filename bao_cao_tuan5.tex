@@ -1,0 +1,415 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage[left=3.00cm, right=2.00cm, top=2.50cm, bottom=2.50cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usetikzlibrary{calc}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small{\textit{Báo cáo thực tập tuần 5}}}
+\lfoot{\small{Sinh viên thực hiện: Nguyễn Thanh Hà}}
+\rfoot{\thepage}
+
+\titleformat{\section}{\normalfont\fontsize{14}{17}\bfseries\selectfont\color{black}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{15}\bfseries\selectfont\color{black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{15}\itshape\selectfont\color{black}}{\thesubsubsection}{1em}{}
+
+\lstdefinestyle{cppstyle}{
+    backgroundcolor=\color{gray!10},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=5pt,
+    frame=single
+}
+\lstset{style=cppstyle}
+
+\begin{document}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 1.5pt] ($(current page.north west) + (3.0cm,-2.0cm)$) rectangle ($(current page.south east) + (-1.5cm,2.0cm)$);
+  \draw[line width = 0.5pt] ($(current page.north west) + (3.1cm,-2.1cm)$) rectangle ($(current page.south east) + (-1.6cm,2.1cm)$);
+\end{tikzpicture}
+
+\begin{center}
+    \textbf{\fontsize{14}{17}\selectfont TRƯỜNG ĐẠI HỌC CÔNG NGHỆ} \\
+    \textbf{\fontsize{12}{15}\selectfont ĐẠI HỌC QUỐC GIA HÀ NỘI} \\
+    
+    \vspace{2.5cm}
+    \textbf{\fontsize{18}{22}\selectfont BÁO CÁO THỰC TẬP TUẦN 5} \\[0.5cm]
+    \textbf{\fontsize{13}{16}\selectfont ĐỀ TÀI: WEB FRONTEND ADMIN UI, XỬ LÝ LỖI REALTIME} \\
+    \textbf{\fontsize{13}{16}\selectfont \& ĐÓNG GÓI DOCKERIZATION TỔNG THỂ} \\
+    
+    \vspace{3.5cm}
+    \fontsize{12}{15}\selectfont
+    \begin{tabular}{ll}
+        Sinh viên thực hiện: & \textbf{Nguyễn Thanh Hà} \\
+        Mã số sinh viên: & \textbf{23021810} \\
+        Lớp: & \textbf{K68E-EC1} \\
+        Người hướng dẫn: & \textbf{Hồ Sỹ Minh} \\
+        Giáo viên hướng dẫn: & \textbf{Nguyễn Hồng Thịnh} \\
+    \end{tabular}
+    
+    \vfill
+    \textbf{Hà Nội, 2026}
+\end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ==================== CHƯƠNG 1 ====================
+\section{MỤC TIÊU VÀ KẾ HOẠCH CHI TIẾT TUẦN 5}
+Mục tiêu chính của Tuần 5 là xây dựng giao diện Web Frontend Admin UI (ReactJS + TypeScript + Vite) đạt chuẩn thiết kế Dark Glassmorphism, lập trình luồng Thêm cư dân 2 bước realtime, khắc phục triệt để lỗi hiển thị font tiếng Việt trên OpenCV, đóng gói môi trường sản xuất Dockerization và nghiệm thu tổng thể.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Thời gian} & \textbf{Nội dung công việc thực hiện} & \textbf{Kết quả / Sản phẩm yêu cầu} \\ \hline
+\textbf{Thứ Hai} & Khởi tạo dự án \texttt{frontend/} bằng Vite + React + TypeScript. Thiết kế CSS Token Dark Glassmorphism, HSL color palette. & Khung ứng dụng Web Admin với Sidebar, Header và custom Icons. \\ \hline
+\textbf{Thứ Ba} & Phát triển Dashboard, Giám sát thang máy live (\texttt{ElevatorMonitorView.tsx}), Phí \& Hóa đơn (\texttt{BillsView.tsx}), Kanban (\texttt{MaintenanceView.tsx}). & Giao diện các trang chức năng hoàn chỉnh và trực quan. \\ \hline
+\textbf{Thứ Tư} & Lập trình luồng Thêm cư dân 2 bước trên \texttt{ResidentsView.tsx} với Modal Progress bar \texttt{0..30} poll status realtime 1s/lần. & Xử lý hoàn hảo trạng thái bận 409 Conflict và Đăng ký thành công. \\ \hline
+\textbf{Thứ Năm} & Xử lý lỗi font UTF-8 console (\texttt{SetConsoleOutputCP}) và lập trình hàm \texttt{removeVietnameseAccents()} cho OpenCV \texttt{putText}. & Giải quyết triệt để lỗi \texttt{H??} trên cửa sổ camera và thang máy OpenCV. \\ \hline
+\textbf{Thứ Sáu} & Đóng gói Docker Compose (\texttt{docker-compose.yml}), viết script 1-click \texttt{start\_all.bat} / \texttt{start\_all.ps1} và kiểm thử End-to-End. & Hệ thống hoàn chỉnh 100\%, hoàn thành nghiệm thu thực tập. \\ \hline
+\end{tabularx}
+\caption{Phân bổ lịch trình công việc Tuần 5}
+\end{table}
+
+\newpage
+
+% ==================== CHƯƠNG 2 ====================
+\section{NỘI DUNG VÀ KẾT QUẢ THỰC HIỆN CHI TIẾT}
+
+\subsection{Thứ Hai — Khởi tạo Web Frontend ReactJS + TypeScript}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Khởi tạo ứng dụng Web Frontend tại thư mục \texttt{frontend/} bằng Vite + React + TypeScript:
+    \item \textbf{Thiết kế hệ thống CSS Design System}: Xây dựng file \texttt{index.css} định nghĩa các CSS Variables HSL tailoring colors, hiệu ứng kính mờ Glassmorphism (\texttt{backdrop-filter: blur(16px)}), font chữ Plus Jakarta Sans và custom SVG icon \texttt{ElevatorIcon.tsx}.
+\end{itemize}
+
+\subsection{Thứ Ba — Phát triển Các Trang Chức Năng Cốt Lõi}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Lập trình các views chức năng phục vụ quản trị chung cư:
+    \begin{enumerate}
+        \item \texttt{DashboardView.tsx}: Hiển thị các thẻ thống kê (Stats Cards), biểu đồ lượt quẹt mặt AI và danh sách cảnh báo an ninh nổi bật.
+        \item \texttt{ElevatorMonitorView.tsx}: Bảng điều khiển LED tầng thang máy realtime (01-10), mũi tên di chuyển động và bảng thông số kỹ thuật C++ biên.
+        \item \texttt{BillsView.tsx}: Quản lý hóa đơn dịch vụ, tạo mã VietQR thanh toán tự động.
+        \item \texttt{MaintenanceView.tsx}: Quản lý sự cố kỹ thuật điện nước/thang máy theo mô hình bảng Kanban 3 cột (\textit{Chờ xử lý}, \textit{Đang xử lý}, \textit{Đã hoàn thành}).
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Thứ Tư — Lập trình Luồng Thêm Cư Dân 2 Bước \& Polling Realtime}
+\begin{itemize}
+    \item \textbf{Nội dung công việc}: Lập trình component \texttt{ResidentsView.tsx} thực hiện quy trình đăng ký cư dân 2 bước an toàn:
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+// Complete Two-Step Enrollment Flow in React TypeScript
+1. Buc 1: Nguoi dung nhap Ten, Can ho (P502), Tang dich (5) -> POST /api/residents.
+2. Buc 2: Bam "Quet khuon mat AI" -> POST /api/residents/:id/start-enrollment (Proxy den C++ 8080).
+   - Neu device tra 409 Conflict: Hien thi Modal "Thiet bi dang ban dang ky cu dan khac", nut Thuc lai.
+   - Neu device tra 200 OK: Mo Modal Progress Bar, thuc hien setInterval poll GET /api/residents/:id/enrollment-status moi 1s.
+   - Khi enrollProgress dat 30/30 va mode quay ve RECOGNIZING: Hien thi badge "Da dang ky AI" va cap nhat CSDL.
+\end{lstlisting}
+
+\subsection{Thứ Năm — Khắc phục Lỗi Font UTF-8 \& OpenCV putText}
+\begin{itemize}
+    \item \textbf{Phân tích lỗi vỡ font}:
+    \begin{enumerate}
+        \item \textit{Trên Console}: Windows PowerShell/CMD mặc định sử dụng Code Page 437/1252 nên khi in chuỗi UTF-8 tiếng Việt có dấu (ví dụ "Lê Thị Hoa", "Phạm Minh Đức") sẽ bị vỡ ký tự. Đã khắc phục bằng: \texttt{SetConsoleOutputCP(CP\_UTF8); SetConsoleCP(CP\_UTF8);}.
+        \item \textit{Trên OpenCV Window}: Phông chữ Hershey của OpenCV (\texttt{FONT\_HERSHEY\_DUPLEX}) chỉ hỗ trợ bảng mã ASCII (0-127). Khi truyền tên tiếng Việt có dấu vào \texttt{cv::putText()}, OpenCV hiện ra các ký tự chấm hỏi \texttt{H??}.
+    \end{enumerate}
+    \item \textbf{Thuật toán Khử dấu Tiếng Việt (\texttt{removeVietnameseAccents()})}:
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+std::string removeVietnameseAccents(const std::string& str) {
+    // Duyet tung byte trong chuoi UTF-8
+    std::string res;
+    res.reserve(str.size());
+    for (size_t i = 0; i < str.size(); ) {
+        unsigned char c = (unsigned char)str[i];
+        // Ky tu ASCII thong thuong (0x00 - 0x7F) giu nguyen
+        if (c < 0x80) { res += (char)c; i++; }
+        else {
+            // Doc 2-3 byte UTF-8 de nhan dang ky tu tieng Viet
+            std::string sub;
+            if ((c & 0xE0) == 0xC0 && i+1 < str.size()) { sub = str.substr(i,2); i+=2; }
+            else if ((c & 0xF0) == 0xE0 && i+2 < str.size()) { sub = str.substr(i,3); i+=3; }
+            else { i++; continue; }
+
+            // Anh xa ky tu co dau -> khong dau ASCII
+            if (sub=="a"||sub=="a"||sub=="a"||sub=="a"||sub=="a"||sub=="a"||sub=="a") res+='a';
+            else if (sub=="e"||sub=="e"||sub=="e"||sub=="e"||sub=="e") res+='e';
+            else if (sub=="i"||sub=="i"||sub=="i"||sub=="i"||sub=="i") res+='i';
+            else if (sub=="o"||sub=="o"||sub=="o"||sub=="o"||sub=="o") res+='o';
+            else if (sub=="u"||sub=="u"||sub=="u"||sub=="u"||sub=="u") res+='u';
+            else if (sub=="y"||sub=="y"||sub=="y") res+='y';
+            else if (sub=="d") res+='d';
+            else if (sub=="D") res+='D';
+            else res+=' ';
+        }
+    }
+    return res;
+}
+\end{lstlisting}
+
+\textbf{Ket qua dat duoc}: Chuyen doi ten tieng Viet sang ASCII khi ve tren OpenCV (\texttt{"Hoa"} $\rightarrow$ \texttt{"Hoa"}, \texttt{"Le Thi Hoa"} $\rightarrow$ \texttt{"Le Thi Hoa"}), loai bo hoan toan loi \texttt{H??} tren camera, trong khi SQLite va Web Admin van giu nguyen ten co dau chuan UTF-8.
+
+\subsection{Thứ Sáu — Đóng gói Docker Compose \& Script Khởi chạy 1-Click}
+
+\subsubsection{Dockerization từng thành phần}
+\begin{itemize}
+    \item \textbf{Backend Dockerfile} (\texttt{backend/Dockerfile}): Sử dụng \texttt{node:20-alpine} làm image nền, chạy 2 giai đoạn (multi-stage build): giai đoạn \texttt{builder} biên dịch TypeScript ra JavaScript, giai đoạn \texttt{runner} chỉ sao chép thư mục \texttt{dist/} và cài các gói production để giảm kích thước image cuối.
+    \item \textbf{Frontend Dockerfile} (\texttt{frontend/Dockerfile}): Giai đoạn \texttt{builder} dùng \texttt{node:20-alpine} chạy \texttt{npm run build} xuất ra thư mục \texttt{dist/}. Giai đoạn \texttt{runner} dùng \texttt{nginx:alpine} phục vụ các file tĩnh React qua cổng 80.
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+# docker-compose.yml
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: smartelevator_db
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+
+  backend:
+    build: ./backend
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: postgresql://admin:adminpassword@postgres:5432/smartelevator_db
+      DEVICE_IP: http://host.docker.internal:8080
+    depends_on: [postgres]
+
+  frontend:
+    build: ./frontend
+    ports: ["80:80"]
+    depends_on: [backend]
+
+volumes:
+  pgdata:
+\end{lstlisting}
+
+\subsubsection{Script Khởi chạy 1-Click cho Môi trường Phát triển}
+\begin{itemize}
+    \item \textbf{Vấn đề gặp phải}: Khi chạy \texttt{start\_all.ps1} trực tiếp, Windows chặn bằng lỗi \texttt{UnauthorizedAccess: running scripts is disabled on this system} do chính sách \texttt{Execution Policy}.
+    \item \textbf{Giải pháp}: Tạo thêm file \texttt{start\_all.bat} (Windows Batch) cho phép gọi PowerShell kèm cờ \texttt{-ExecutionPolicy Bypass}, đồng thời tự động dọn dẹp các tiến trình cũ trước khi khởi động mới.
+\end{itemize}
+
+\begin{lstlisting}[language=C++]
+@echo off
+:: start_all.bat - Khoi chay toan bo he thong SmartElevator bang 1 click
+echo [0] Don dep tien trinh cu (Port 3000, 5173)...
+taskkill /f /im node.exe /im SmartElevatorCamera.exe >nul 2>&1
+timeout /t 1 /nobreak >nul
+
+echo [1] Dang khoi chay Backend (Port 3000)...
+start "Backend" powershell -ExecutionPolicy Bypass -NoExit -Command ^
+  "$env:Path = 'C:\Exercsise - Copy - Copy - Copy\node-bin;' + $env:Path; ^
+   Set-Location 'C:\Exercsise - Copy - Copy - Copy\backend'; node dist/server.js"
+
+echo [2] Dang khoi chay Frontend (Port 5173)...
+start "Frontend" powershell -ExecutionPolicy Bypass -NoExit -Command ^
+  "$env:Path = 'C:\Exercsise - Copy - Copy - Copy\node-bin;' + $env:Path; ^
+   Set-Location 'C:\Exercsise - Copy - Copy - Copy\frontend'; npm run preview"
+
+echo [3] Dang khoi chay Camera C++ Edge Device...
+start "Camera C++" powershell -ExecutionPolicy Bypass -NoExit -Command ^
+  "Set-Location 'C:\Exercsise - Copy - Copy - Copy'; .\build\SmartElevatorCamera.exe"
+\end{lstlisting}
+
+\newpage
+
+% ==================== CHƯƠNG 3 ====================
+\section{KIẾN TRÚC TỔNG THỂ HỆ THỐNG HOÀN CHỈNH}
+
+Sau 5 tuần thực tập, hệ thống đã được xây dựng theo mô hình 3 lớp rõ ràng:
+
+\begin{enumerate}
+    \item \textbf{Edge Device (C++ SmartElevator Camera)} — Cổng 8080:
+    \begin{itemize}
+        \item Điều khiển phần cứng: Giao tiếp cổng COM3 (Win32 API, 9600 baud).
+        \item Nhận diện AI: OpenCV HaarCascade + LBPH (ngưỡng confidence $<$ 80).
+        \item Quản lý trạng thái thang máy: State machine 7 bước (IDLE $\rightarrow$ ARRIVED).
+        \item Nhận lệnh từ xa: Embedded HTTP Server (\texttt{cpp-httplib}, port 8080).
+        \item Đồng bộ dữ liệu: HTTP Client (\texttt{SyncManager}), xác thực X-API-Key.
+    \end{itemize}
+    \item \textbf{Central Backend Server (Node.js / Express TypeScript)} — Cổng 3000:
+    \begin{itemize}
+        \item Lưu trữ trung tâm: SQLite / PostgreSQL (9 bảng quan hệ).
+        \item REST APIs nghiệp vụ: Cư dân, Hóa đơn, Thông báo, Kanban, Access logs, Alerts.
+        \item Proxy Control: Chuyển tiếp lệnh điều khiển tới C++ Device (port 8080).
+        \item Bảo mật: JWT Auth (Admin), X-API-Key (C++ Device).
+    \end{itemize}
+    \item \textbf{Web Frontend Admin UI (ReactJS TypeScript)} — Cổng 5173/80:
+    \begin{itemize}
+        \item Giao diện quản trị: Dark Glassmorphism, responsive, micro-animations.
+        \item Realtime polling: Theo dõi tiến độ quét khuôn mặt 0..30 mỗi 1 giây.
+        \item Tích hợp đầy đủ: Dashboard, Elevator Monitor, Bills, Kanban, Notifications, Access Logs.
+    \end{itemize}
+\end{enumerate}
+
+\newpage
+
+% ==================== CHƯƠNG 4 ====================
+\section{KẾT QUẢ KIỂM THỬ ĐƠN VỊ (UNIT TEST)}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|c|}
+\hline
+\textbf{Mã TC} & \textbf{Mục tiêu kiểm thử} & \textbf{Dữ liệu đầu vào \& Kịch bản} & \textbf{Trạng thái} \\ \hline
+TC01 & Truy cập Web Admin UI & Mở \texttt{http://localhost:5173} trên trình duyệt & Pass \\ \hline
+TC02 & Dashboard hiển thị số liệu & Gọi API lấy tổng số cư dân, hóa đơn, nhật ký & Pass \\ \hline
+TC03 & Thêm cư dân Bước 1 & POST \texttt{/api/residents} với tên, phòng, tầng & Pass \\ \hline
+TC04 & Quét khuôn mặt AI Bước 2 & Bấm "Quét mặt AI", kiểm tra modal mở & Pass \\ \hline
+TC05 & Progress Bar Realtime 0..30 & Poll API mỗi 1s, kiểm tra thanh tiến độ tăng & Pass \\ \hline
+TC06 & Xử lý 409 Conflict trên UI & Kích hoạt khi C++ Device đang bận ENROLLING & Pass \\ \hline
+TC07 & Live Elevator Monitor LED & Thay đổi tầng trên C++ Device, kiểm tra LED & Pass \\ \hline
+TC08 & Kanban Sửa chữa 3 cột & Chuyển trạng thái PENDING $\rightarrow$ IN\_PROGRESS & Pass \\ \hline
+TC09 & Font tiếng Việt Console & In "Nguyễn Thị Hóa" trên Console, kiểm tra UTF-8 & Pass \\ \hline
+TC10 & Font OpenCV Camera & Vẽ "Nguyễn Thị Hóa" lên putText, kết quả "Nguyen Thi Hoa" & Pass \\ \hline
+TC11 & Script \texttt{start\_all.bat} 1-click & Chạy batch file, kiểm tra 3 cửa sổ tự động mở & Pass \\ \hline
+TC12 & Docker Compose Build \& Up & \texttt{docker-compose up --build}, kiểm tra 3 containers & Pass \\ \hline
+\end{tabularx}
+\caption{Bảng tổng hợp kết quả kiểm thử đơn vị Tuần 5}
+\end{table}
+
+\section{MINH HỌA GIAO DIỆN HỆ THỐNG HOÀN CHỈNH}
+
+Sau 5 tuần thực tập, toàn bộ hệ thống đã hoạt động đồng bộ xuyên suốt từ thiết bị biên C++ cho đến giao diện Web Admin. Các màn hình sau minh họa kết quả thực tế:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/dashboard.png}
+    \caption{Trang Tổng Quan Hệ Thống (Dashboard) — Hiển thị các thẻ thống kê realtime, nhật ký ra vào thang máy AI và cảnh báo an ninh từ Backend, với giao diện Dark Glassmorphism phân cong, hiện đại.}
+    \label{fig:dash_tuan5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/residents.png}
+    \caption{Trang Quản Lý Cư Dân — Danh sách cư dân với trạng thái Đã Đăng Ký AI / Chưa Có Khuôn Mặt. Nút \textit{Thêm Cư Dân Mới (2 Bước)} khởi động luồng đăng ký 2 bước với Progress Bar realtime 0..30 mẫu ảnh.}
+    \label{fig:residents_tuan5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/bills.png}
+    \caption{Trang Quản Lý Hóa Đơn \& Thanh Toán Dịch Vụ — Liệt kê hóa đơn theo căn hộ với trạng thái Chưa Thanh Toán / Đã Thanh Toán. Nút \textit{Thanh Toán QR} tự động tạo mã VietQR thanh toán từ API Backend (port 3000).}
+    \label{fig:bills_tuan5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/elevator_ui.png}
+    \caption{Giao diện Điều Khiển Thang Máy C++ (Smart Elevator Controller, port 8080) — Truy cập qua Embedded HTTP Server, hiển thị số tầng LED xanh theo thời gian thực.}
+    \label{fig:elevator_tuan5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/camera_ai.png}
+    \caption{Hệ thống Camera AI OpenCV LBPH — Nhận diện khuôn mặt và phát hiện người lạ theo thời gian thực. Sau khi được khắc phục lỗi font UTF-8, nhãn hiển thị đúng chuẩn ASCII không bị vỡ ký tự \texttt{H??}.}
+    \label{fig:camera_tuan5}
+\end{figure}
+
+\section{ĐÁNH GIÁ TIẾN ĐỘ TỔNG THỂ 5 TUẦN THỰC TẬP}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|c|X|c|}
+\hline
+\textbf{Tuần} & \textbf{Công việc hoàn thành} & \textbf{Kết quả} \\ \hline
+Tuần 1 & Khảo sát yêu cầu, cài đặt môi trường, đọc mã nguồn C++ hiện có & 100\% \\ \hline
+Tuần 2 & Lập trình AI nhận diện khuôn mặt LBPH, DatabaseManager, giao diện OpenCV, cổng COM3 & 100\% \\ \hline
+Tuần 3 & Loại bỏ \texttt{cin}, tái cấu trúc State Machine, Embedded HTTP Server, SyncManager & 100\% \\ \hline
+Tuần 4 & Thiết kế CSDL 9 bảng, Central Backend REST APIs, Proxy Control, bảo mật X-API-Key & 100\% \\ \hline
+Tuần 5 & Web Frontend Glassmorphism, luồng 2 bước realtime, fix font, Docker, Script 1-click & 100\% \\ \hline
+\end{tabularx}
+\caption{Bảng tổng hợp tiến độ 5 tuần thực tập}
+\end{table}
+
+\begin{itemize}
+    \item \textbf{Đánh giá cá nhân}: Hoàn thành xuất sắc 100\% toàn bộ mục tiêu hệ thống Phần mềm Quản lý Chung cư Thông minh Tích hợp C++ SmartElevator Camera trong 5 tuần thực tập tại VNPT Media.
+    \item \textbf{Kỹ năng đạt được}: Lập trình đa luồng C++17, thiết kế REST API, ReactJS TypeScript, Docker Compose, tích hợp phần cứng Win32 API.
+    \item \textbf{Bàn giao}: Đã hoàn thiện toàn bộ mã nguồn trên Github (\url{https://github.com/hangth-ath/SmartElevator.git}), tài liệu hướng dẫn khởi chạy 1-click và video demo nghiệm thu.
+\end{itemize}
+
+\vspace{1.5cm}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{p{7cm} p{7cm}}
+        \centering \textbf{XÁC NHẬN CỦA MENTOR} & \centering \textbf{SINH VIÊN THỰC TẬP} \\[3cm]
+        \centering \textbf{(Ký và ghi rõ họ tên)} & \centering \textbf{Nguyễn Thanh Hà} \\
+    \end{tabular}
+\end{table}
+
+\end{document}
+
+\newpage
+
+% ==================== CHƯƠNG 3 ====================
+\section{KẾT QUẢ KIỂM THỬ ĐƠN VỊ (UNIT TEST)}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|c|}
+\hline
+\textbf{Mã TC} & \textbf{Mục tiêu kiểm thử} & \textbf{Dữ liệu đầu vào \& Kịch bản} & \textbf{Trạng thái} \\ \hline
+TC01 & Đăng nhập Web Admin UI & Truy cập \texttt{http://localhost:5173} & Pass (200 OK) \\ \hline
+TC02 & Realtime Progress Polling UI & Mở Modal quét mặt AI cư dân & Pass (0..30 Progress) \\ \hline
+TC03 & Xử lý 409 Conflict trên UI & Kích hoạt khi C++ Device đang bận & Pass (Busy UI Shown) \\ \hline
+TC04 & Hiển thị Live Elevator Monitor & Thay đổi tầng trên C++ Device & Pass (LED Sync OK) \\ \hline
+TC05 & Sửa chữa Kanban Board & Kéo thả thẻ sự cố PENDING $\rightarrow$ IN\_PROGRESS & Pass (Status Updated) \\ \hline
+TC06 & Kiểm thử Font tiếng Việt & Vẽ tên "Nguyễn Văn Hóa" trên OpenCV Camera & Pass (Shown as "Hoa") \\ \hline
+TC07 & Script khởi chạy 1-click & Chạy \texttt{start\_all.bat} & Pass (3 Windows Opened) \\ \hline
+TC08 & Docker Compose Build & Chạy \texttt{docker-compose up --build} & Pass (Containers Up) \\ \hline
+\end{tabularx}
+\caption{Bảng tổng hợp kết quả kiểm thử đơn vị Tuần 5}
+\end{table}
+
+\section{ĐÁNH GIÁ TIẾN ĐỘ VÀ KẾ HOẠCH BÀN GIAO}
+\begin{itemize}
+    \item \textbf{Đánh giá cá nhân}: Hoàn thành xuất sắc 100\% toàn bộ hệ thống Phần mềm Quản lý Chung cư Thông minh Tích hợp C++ SmartElevator.
+    \item \textbf{Bàn giao}: Đã hoàn thiện mã nguồn, tài liệu hướng dẫn khởi chạy 1-click và nghiệm thu sản phẩm trước Mentor.
+\end{itemize}
+
+\end{document}

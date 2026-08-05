@@ -1,0 +1,176 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage[left=3.00cm, right=2.00cm, top=2.50cm, bottom=2.50cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\usetikzlibrary{calc}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small{\textit{Báo cáo thực tập tuần 2}}}
+\lfoot{\small{Sinh viên thực hiện: Nguyễn Thanh Hà}}
+\rfoot{\thepage}
+
+\titleformat{\section}{\normalfont\fontsize{14}{17}\bfseries\selectfont\color{black}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{15}\bfseries\selectfont\color{black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{15}\itshape\selectfont\color{black}}{\thesubsubsection}{1em}{}
+
+\lstdefinestyle{cppstyle}{
+    backgroundcolor=\color{gray!10},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=5pt,
+    frame=single
+}
+\lstset{style=cppstyle}
+
+\begin{document}
+
+% ==================== TRANG BÌA ====================
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 1.5pt] ($(current page.north west) + (3.0cm,-2.0cm)$) rectangle ($(current page.south east) + (-1.5cm,2.0cm)$);
+  \draw[line width = 0.5pt] ($(current page.north west) + (3.1cm,-2.1cm)$) rectangle ($(current page.south east) + (-1.6cm,2.1cm)$);
+\end{tikzpicture}
+
+\begin{center}
+    \textbf{\fontsize{14}{17}\selectfont Trường Đại học Công nghệ} \\
+    \textbf{\fontsize{12}{15}\selectfont Khoa Điện tử Viễn thông} \\
+    
+    \vspace{2.5cm}
+    \textbf{\fontsize{18}{22}\selectfont BÁO CÁO THỰC TẬP TUẦN 2} \\[0.5cm]
+    \textbf{\fontsize{13}{16}\selectfont ĐỀ TÀI: KIẾN TRÚC ĐIỀU KHIỂN TỪ XA BẰNG EMBEDDED HTTP SERVER} \\
+    \textbf{\fontsize{13}{16}\selectfont \& TÍCH HỢP MODULE ĐỒNG BỘ DỮ LIỆU C++} \\
+    
+    \vspace{3.5cm}
+    \fontsize{12}{15}\selectfont
+    \begin{tabular}{ll}
+        Sinh viên thực hiện: & \textbf{Nguyễn Thanh Hà} \\
+        Mã số sinh viên: & \textbf{23021810} \\
+        Lớp: & \textbf{K68E-EC1} \\
+        Người hướng dẫn: & \textbf{Hồ Sỹ Minh} \\
+    \end{tabular}
+    
+    \vfill
+    \textbf{Hà Nội, 2026}
+\end{center}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ==================== CHƯƠNG 1 ====================
+\section{KẾ HOẠCH CHI TIẾT TUẦN 2}
+Tuần 2 tập trung giải quyết triệt để lỗi treo ứng dụng console C++ bằng cách loại bỏ cơ chế \texttt{cin}, tái cấu trúc sang State Machine bất đồng bộ (\texttt{DeviceMode}), phát triển Embedded HTTP Server (\texttt{device\_server}) và Data Sync Manager (\texttt{sync\_manager}).
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Thời gian} & \textbf{Nội dung công việc thực hiện} & \textbf{Kết quả / Sản phẩm} \\ \hline
+Thứ Hai & Phân tích điểm nghẽn \texttt{cin}, xóa toàn bộ \texttt{cin} trong \texttt{main.cpp}, bổ sung các biến atomic \texttt{deviceMode}, \texttt{pendingResidentId}, \texttt{enrollProgress}. & Vòng lặp chính C++ rẽ nhánh bất đồng bộ giữa \texttt{RECOGNIZING} và \texttt{ENROLLING}. \\ \hline
+Thứ Ba & Cập nhật hàm \texttt{enrollFace()} (bảo toàn 100\% chữ ký hàm), bổ sung logic cập nhật tiến độ 0..30 mẫu và nhận lệnh thoát từ xa khi Cancel. & Thu thập mẫu ảnh không còn bị treo bàn phím console. \\ \hline
+Thứ Tư & Lập trình module Embedded HTTP Server (\texttt{device\_server.h/.cpp}) dùng \texttt{cpp-httplib} chạy trên \texttt{std::thread} riêng tại port 8080. & Hoàn thành endpoints \texttt{start-enrollment}, \texttt{status}, \texttt{cancel-enrollment}. \\ \hline
+Thứ Năm & Lập trình module Data Sync Manager (\texttt{sync\_manager.h/.cpp}) với HTTP Client đồng bộ dữ liệu cư dân, gửi \texttt{access-logs} và \texttt{alerts}. & Tự động đẩy nhật ký và cảnh báo an ninh về Backend. \\ \hline
+Thứ Sáu & Viết và thực thi 2 bộ Unit Test Suite (\texttt{test\_device\_server.cpp} \& \texttt{test\_sync\_manager.cpp}), biên dịch CMake hoàn chỉnh. & Tất cả 9 test cases **PASSED 100\%**, chịu lỗi ngắt mạng an toàn. \\ \hline
+\end{tabularx}
+\caption{Phân bổ lịch trình công việc Tuần 2}
+\end{table}
+
+\section{NỘI DUNG VÀ KẾT QUẢ THỰC HIỆN CHI TIẾT}
+
+\subsection{Thứ Hai — Loại bỏ cơ chế cin \& Tái cấu trúc State Machine}
+Thay thế hoàn toàn câu lệnh \texttt{cin >> choice} bằng cơ chế biến cờ trạng thái thread-safe:
+\begin{lstlisting}[language=C++]
+enum class DeviceMode { RECOGNIZING, ENROLLING };
+std::atomic<DeviceMode> deviceMode{DeviceMode::RECOGNIZING};
+std::atomic<int> pendingResidentId{-1};
+std::atomic<int> enrollProgress{0};
+\end{lstlisting}
+Vòng lặp chính \texttt{while(true)} rẽ nhánh: khi \texttt{deviceMode == DeviceMode::ENROLLING}, chương trình tự động gọi \texttt{enrollFace()} cho cư dân có \texttt{id == pendingResidentId}, sau đó huấn luyện lại mô hình LBPH và quay về \texttt{RECOGNIZING}.
+
+\subsection{Thứ Ba — Cập nhật hàm enrollFace()}
+Bảo toàn 100\% chữ ký hàm:
+\texttt{void enrollFace(VideoCapture\& cap, CascadeClassifier\& faceCascade, DatabaseManager\& db, const Resident\& resident)}
+
+Bổ sung kiểm tra điều kiện thoát từ xa:
+\begin{lstlisting}[language=C++]
+if (deviceMode.load() != DeviceMode::ENROLLING) {
+    cout << "[DANG KY] Nhan lenh huy dang ky tu xa (Cancel). Thoat." << endl;
+    break;
+}
+\end{lstlisting}
+
+\subsection{Thứ Tư — Lập trình Embedded HTTP Server (device\_server)}
+Module \texttt{DeviceServer} lắng nghe tại cổng \texttt{8080} trên một \texttt{std::thread} riêng biệt, không chặn vòng lặp camera:
+\begin{itemize}
+    \item \texttt{POST /device/start-enrollment}: Nhận \texttt{\{"residentId": int\}}. Nếu sẵn sàng trả về \texttt{200 OK}, nếu đang bận trả về \texttt{409 Conflict}.
+    \item \texttt{GET /device/status}: Trả về JSON trạng thái realtime \texttt{\{mode, enrollProgress, elevatorState, currentFloor, targetFloor\}}.
+    \item \texttt{POST /device/cancel-enrollment}: Đặt \texttt{deviceMode = RECOGNIZING}, hủy luồng đăng ký.
+\end{itemize}
+
+\subsection{Thứ Năm — Lập trình Module Data Sync Manager (sync\_manager)}
+Lớp \texttt{SyncManager} đóng vai trò Client giao tiếp với Backend trung tâm qua HTTP Header \texttt{X-API-Key: DEV\_SECRET\_KEY\_123}:
+\begin{itemize}
+    \item \texttt{syncResidentsFromBackend(db)}: Tải cư dân mới từ Backend về SQLite local.
+    \item \texttt{sendAccessLog(residentId, floor)}: Gửi nhật ký quẹt mặt ngay khi nhận diện thành công.
+    \item \texttt{sendAlert(reason)}: Gửi cảnh báo an ninh khi phát hiện Người lạ.
+\end{itemize}
+Tất cả các kết nối HTTP Client đều được thiết lập timeout (1-2s). Nếu Backend chưa bật hoặc mất mạng, chương trình ghi log lỗi và tiếp tục vận hành camera bình thường, **tuyệt đối không bị treo hay crash**.
+
+\subsection{Thứ Sáu — Kiểm thử Tự động \& Biên dịch CMake}
+Viết hai bộ test tự động \texttt{test\_device\_server.cpp} (5 test cases) và \texttt{test\_sync\_manager.cpp} (4 test cases với Mock Server port 3001).
+Cập nhật \texttt{CMakeLists.txt} liên kết các thư viện Sockets \texttt{ws2\_32} và \texttt{crypt32}.
+
+\section{KẾT QUẢ KIỂM THỬ ĐƠN VỊ (UNIT TEST)}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|l|X|X|c|}
+\hline
+\textbf{Mã TC} & \textbf{Mục tiêu kiểm thử} & \textbf{Kết quả mong đợi} & \textbf{Trạng thái} \\ \hline
+TC01 & Polling GET /device/status & Trả về JSON mode RECOGNIZING \& status thang & Pass \\ \hline
+TC02 & POST /device/start-enrollment & Kích hoạt mode ENROLLING, pendingResidentId = 1 & Pass \\ \hline
+TC03 & Start Enrollment khi bận & Trả về HTTP 409 Conflict chính xác & Pass \\ \hline
+TC04 & POST /device/cancel-enrollment & Chuyển về RECOGNIZING, reset pendingResidentId & Pass \\ \hline
+TC05 & Start Enrollment ID không có & Trả về HTTP 404 Not Found & Pass \\ \hline
+TC06 & Đồng bộ cư dân từ Backend & Tự động chèn cư dân mới vào SQLite local & Pass \\ \hline
+TC07 & Gửi Access Log & Backend nhận đúng residentId và targetFloor & Pass \\ \hline
+TC08 & Gửi Security Alert & Backend nhận đúng chuỗi cảnh báo người lạ & Pass \\ \hline
+TC09 & Thử nghiệm Backend Offline & Ghi log lỗi, C++ app hoạt động bình thường không crash & Pass \\ \hline
+\end{tabularx}
+\caption{Bảng kết quả kiểm thử đơn vị Tuần 2}
+\end{table}
+
+\section{ĐÁNH GIÁ TIẾN ĐỘ TUẦN 2}
+Hoàn thành 100\% mục tiêu đặt ra. Loại bỏ hoàn toàn lỗi treo console \texttt{cin}, ứng dụng C++ sẵn sàng điều khiển từ xa qua REST APIs.
+Mã nguồn Github: \url{https://github.com/hangth-ath/SmartElevator.git}
+
+\end{document}

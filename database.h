@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 #include <sqlite3.h>
 #include <opencv2/opencv.hpp>
 
@@ -13,7 +14,26 @@ struct Resident {
     std::string name;
     std::string apartment;
     int targetFloor;
+
+    // Nap chong toan tu << de xuat thong tin Resident
+    friend std::ostream& operator<<(std::ostream& os, const Resident& r) {
+        os << "ID: " << r.id << " | Ten: " << r.name << " | Phong: " << r.apartment << " | Tang: " << r.targetFloor;
+        return os;
+    }
 };
+
+// Ham template de hien thi danh sach (vector) bat ky ho tro toan tu <<
+template<typename T>
+void printDataList(const std::vector<T>& dataVec) {
+    if (dataVec.empty()) {
+        std::cout << "  (Danh sach trong)" << std::endl;
+        return;
+    }
+    for (const auto& item : dataVec) {
+        std::cout << "  - " << item << std::endl;
+    }
+}
+
 
 // Struct chua du lieu huan luyen nhan dien khuon mat
 struct FaceTrainingData {
