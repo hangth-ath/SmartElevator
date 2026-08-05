@@ -6,7 +6,7 @@ Hệ thống tích hợp **nhận diện khuôn mặt bằng AI**, **quản lý 
 |---|---|---|
 | 📷 **C++ Edge Device** (Camera + Thang máy) | C++17 · OpenCV · SQLite3 | HTTP `8080` |
 | ⚙️ **Central Backend** (API Server) | Node.js · Express · SQLite3 | `3000` |
-| 🖥️ **Web Admin UI** (Giao diện quản trị) | React · TypeScript · Vite | `5173` |
+| 🖥️ **Web Admin UI** (Giao diện quản trị) | React · TypeScript · Vite | `4173` |
 
 ---
 
@@ -15,7 +15,7 @@ Hệ thống tích hợp **nhận diện khuôn mặt bằng AI**, **quản lý 
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                        ADMIN (Trình duyệt)                   │
-│                    http://localhost:5173                      │
+│                    http://localhost:4173                      │
 └─────────────────────────┬────────────────────────────────────┘
                           │ REST API
                           ▼
@@ -104,7 +104,7 @@ start_all.bat
 ```
 
 Lệnh này tự động khởi động cả 3 thành phần:
-- 🌐 Web Admin UI: **http://localhost:5173**
+- 🌐 Web Admin UI: **http://localhost:4173**
 - ⚙️ Backend API: **http://localhost:3000**
 - 📷 Camera C++: HTTP Server Port **8080**
 
@@ -167,7 +167,7 @@ npm install
 npm run dev
 ```
 
-Giao diện mở tại **http://localhost:5173**
+Giao diện mở tại **http://localhost:4173**
 
 ---
 
@@ -204,7 +204,7 @@ docker-compose up -d
 
 ### 1. Đăng nhập Web Admin
 
-Truy cập **http://localhost:5173** và đăng nhập bằng tài khoản admin.
+Truy cập **http://localhost:4173** và đăng nhập bằng tài khoản admin.
 
 ### 2. Thêm cư dân mới
 
@@ -394,7 +394,6 @@ DEVICE_IP=http://192.168.1.100:8080 npm start
 | File | Nội dung |
 |---|---|
 | `bao_cao_du_an.tex` | Báo cáo tổng kết toàn bộ dự án |
-| `bao_cao_thuc_tap_3_tuan.tex` | Báo cáo thực tập 3 tuần |
 | `bao_cao_tuan1.tex` → `bao_cao_tuan5.tex` | Báo cáo tiến độ từng tuần |
 
 Biên dịch sang PDF bằng [TeXstudio](https://www.texstudio.org/) hoặc [Overleaf](https://www.overleaf.com/).
