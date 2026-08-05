@@ -157,8 +157,4 @@ Trên màn hình quẹt Camera chính:
 
 ---
 
-## 📜 Giấy phép & Tác giả
-- Dự án Đồ án / Bài tập lớn: **Hệ thống Camera Thang máy Thông minh**.
-- Phát triển bằng **C++17**, **OpenCV 4.x**, **SQLite3**, **Win32 API**.
-
 
