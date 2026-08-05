@@ -1,76 +1,164 @@
-# Smart Elevator Camera System (Hệ thống Camera Thang máy Thông minh)
+# 🏢 Smart Elevator Camera System (Hệ thống Camera Thang máy Thông minh)
 
-Dự án này là một ứng dụng C++ mô phỏng hệ thống thang máy thông minh tích hợp camera nhận diện khuôn mặt cư dân. Hệ thống tự động xác định cư dân qua camera, truy vấn tầng đăng ký mặc định của họ trong cơ sở dữ liệu SQLite3, và điều khiển thang máy di chuyển đến tầng tương ứng, đồng thời gửi tín hiệu điều khiển qua cổng COM nối tiếp (Serial Port).
+Ứng dụng C++ mô phỏng hệ thống thang máy thông minh tích hợp camera nhận diện khuôn mặt cư dân. Hệ thống tự động phát hiện cư dân qua camera (OpenCV LBPH), truy vấn tầng đăng ký mặc định trong cơ sở dữ liệu SQLite3, hiển thị mô phỏng 2D quá trình di chuyển của thang máy và gửi tín hiệu điều khiển qua cổng nối tiếp Serial COM (Win32 API).
 
 ---
 
 ## 🚀 Các tính năng chính
 
-1. **Nhận diện khuôn mặt cư dân**: Sử dụng thuật toán nhận diện khuôn mặt LBPH (Local Binary Patterns Histograms) từ thư viện OpenCV.
-2. **Quản lý dữ liệu cư dân (CRUD)**: Lưu trữ thông tin cá nhân (ID, tên, căn hộ, tầng đăng ký mặc định) và tập dữ liệu khuôn mặt vào cơ sở dữ liệu SQLite3.
-3. **Mô phỏng thang máy trực quan**: Giao diện hiển thị trực quan trạng thái thang máy (trạng thái mở/đóng cửa, tầng hiện tại, tầng đích, hình ảnh cư dân bước vào) sử dụng GUI của OpenCV.
-4. **Giao tiếp cổng COM (Serial Port)**: Kết nối và gửi lệnh điều khiển thang máy tới phần cứng bên ngoài (hoặc phần mềm mô phỏng cổng COM ảo).
+1. **Nhận diện khuôn mặt cư dân (AI Face Recognition)**:
+   - Sử dụng thuật toán **LBPH (Local Binary Patterns Histograms)** từ thư viện `opencv_contrib`.
+   - Nhận diện cư dân theo thời gian thực từ Webcam/Camera.
+   - Tự động nhận biết người lạ (hiển thị khung cảnh báo màu đỏ).
+
+2. **Quản lý dữ liệu cư dân (SQLite3 Database)**:
+   - Lưu trữ thông tin cá nhân (ID, Tên, Căn hộ, Tầng mặc định) vào file SQLite (`elevator_system.db`).
+   - Quản lý và lưu trữ các mẫu ảnh khuôn mặt trong thư mục `faces/`.
+   - Tự động nạp dữ liệu cư dân mẫu khi mở ứng dụng lần đầu.
+
+3. **Chế độ đăng ký & Huấn luyện khuôn mặt (Face Enrollment & Auto-Train)**:
+   - Hỗ trợ chụp trực tiếp tập mẫu khuôn mặt (30 ảnh mẫu) từ camera.
+   - Tự động huấn luyện lại và lưu mô hình AI ra file cache (`lbph_model.yml`).
+
+4. **Mô phỏng giao diện Thang máy 2D (OpenCV GUI)**:
+   - Hiển thị trực quan cabin thang máy di chuyển qua các tầng.
+   - Mô phỏng động tác đóng/mở cửa thang máy trượt 2 cánh.
+   - Hiển thị hình ảnh & thông tin căn hộ của cư dân bên trong cabin.
+
+5. **Giao tiếp Cổng nối tiếp (Serial Port / COM)**:
+   - Tự động kết nối tới cổng `COM3` với tốc độ Baud `9600`.
+   - Gửi tín hiệu tầng tương ứng (`'1'` đến `'9'`,...) tới phần cứng hoặc mô phỏng.
+   - **Tự động chuyển sang chế độ DEMO** nếu không tìm thấy cổng COM (vẫn chạy đầy đủ tính năng nhận diện & GUI).
 
 ---
 
-## 📁 Cấu trúc thư mục dự án nên đẩy lên GitHub
+## 📁 Cấu trúc thư mục dự án
 
-Để người đọc dễ dàng hiểu và chạy được dự án, bạn nên đẩy lên các file và thư mục sau:
+```text
+SmartElevator/
+├── CMakeLists.txt                 # Cấu hình biên dịch CMake
+├── main.cpp                       # Luồng xử lý chính, Camera, AI, GUI thang máy & Serial COM
+├── database.h / database.cpp      # Quản lý cơ sở dữ liệu SQLite3 và lưu ảnh khuôn mặt
+├── haarcascade_frontalface_alt.xml# File mô hình phát hiện khuôn mặt Haar Cascade của OpenCV
+├── README.md                      # Tài liệu hướng dẫn sử dụng
+├── .gitignore                     # Danh sách bỏ qua khi commit Git
+└── build/                         # Thư mục chứa sản phẩm sau biên dịch (tự tạo)
+    ├── SmartElevatorCamera.exe    # File ứng dụng thực thi
+    ├── run.bat                    # Script khởi chạy ứng dụng (thêm DLL PATH & chạy exe)
+    ├── elevator_system.db         # Cơ sở dữ liệu SQLite (tự sinh ra khi chạy)
+    ├── lbph_model.yml             # Mô hình AI đã huấn luyện (tự sinh ra khi chạy)
+    └── faces/                     # Thư mục chứa tập ảnh khuôn mặt (tự sinh ra khi chạy)
+```
 
-| Tên File/Thư mục | Mô tả | Trạng thái đẩy lên |
+---
+
+## 🛠️ Yêu cầu hệ thống & Môi trường cài đặt
+
+### 1. Hệ điều hành & Trình biên dịch
+- **Hệ điều hành**: Windows 10 / 11 (do ứng dụng sử dụng Win32 API `<windows.h>` để điều khiển Cổng COM).
+- **Trình biên dịch**: GCC (MSYS2 UCRT64 / MinGW-w64) hỗ trợ **C++17** hoặc MSVC.
+
+### 2. Các công cụ & Thư viện cần thiết
+Nếu sử dụng **MSYS2 UCRT64** (khuyên dùng), mở **MSYS2 UCRT64 Terminal** và cài đặt các gói sau:
+
+```bash
+pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-make
+pacman -S mingw-w64-ucrt-x86_64-opencv
+pacman -S mingw-w64-ucrt-x86_64-sqlite3
+```
+
+*(Lưu ý: Gói `opencv` trên MSYS2 đã bao gồm module `opencv_contrib/face` cần thiết cho thuật toán LBPH).*
+
+---
+
+## 🔨 Hướng dẫn Biên dịch và Chạy ứng dụng
+
+### Bước 1: Clone kho lưu trữ
+```bash
+git clone <link_github_cua_ban>
+cd SmartElevator
+```
+
+### Bước 2: Biên dịch ứng dụng bằng CMake
+Mở terminal (**Command Prompt** hoặc **MSYS2 UCRT64 Terminal**) tại thư mục dự án và chạy các lệnh sau:
+
+```cmd
+# 1. Tạo thư mục build và di chuyển vào
+mkdir build
+cd build
+
+# 2. Tạo file cấu hình build với CMake
+cmake -G "MinGW Makefiles" ..
+
+# 3. Biên dịch chương trình
+cmake --build .
+```
+
+*Sau khi biên dịch thành công, file `SmartElevatorCamera.exe` sẽ xuất hiện trong thư mục `build/`.*
+
+### Bước 3: Chuẩn bị file dữ liệu
+Đảm bảo file phân loại khuôn mặt `haarcascade_frontalface_alt.xml` nằm ở thư mục chạy chương trình (`build/`). Copy file từ thư mục gốc vào `build/` nếu chưa có:
+
+```cmd
+copy ..\haarcascade_frontalface_alt.xml .
+```
+
+### Bước 4: Chạy chương trình
+
+#### **Cách 1: Chạy qua file `run.bat` (Khuyên dùng)**
+Do ứng dụng cần liên kết với các thư viện DLL (OpenCV, SQLite3...), file `run.bat` đã được cấu hình đường dẫn `PATH` tự động:
+
+```cmd
+run.bat
+```
+
+#### **Cách 2: Chạy trực tiếp qua Executable**
+```cmd
+SmartElevatorCamera.exe
+```
+*(Lưu ý: Nếu báo thiếu DLL, hãy thêm `C:\msys64\ucrt64\bin` vào biến môi trường `PATH` của Windows).*
+
+---
+
+## 🎮 Hướng dẫn Sử dụng & Phím tắt
+
+### 1. Khởi động ứng dụng
+- Chương trình sẽ tự động mở cổng **COM3**. Nếu không tìm thấy thiết bị kết nối cổng COM3, hệ thống xuất cảnh báo `[CANH BAO] Khong the ket noi cong COM3. Chay o che do DEMO` và tiếp tục hoạt động bình thường.
+- Tự động nạp danh sách cư dân mẫu nếu cơ sở dữ liệu trống (*Tuan A - P502 - Tầng 5*, *Tuan B - P804 - Tầng 8*, *Tuan C - P1005 - Tầng 10*).
+- Tự động kết nối và mở Webcam máy tính.
+
+### 2. Đăng ký khuôn mặt (Enrollment)
+- Nếu hệ thống chưa có dữ liệu ảnh khuôn mặt, ứng dụng sẽ hỏi bạn có muốn chụp ảnh đăng ký cho từng cư dân hay không.
+- Khi giao diện camera đăng ký hiện ra:
+  - Nhấn **`S`** (Save): Chụp 1 mẫu ảnh khuôn mặt (cần chụp đủ 30 mẫu ảnh).
+  - Nhấn **`Q`** (Quit): Hoàn thành đăng ký cho cư dân đó.
+- Sau khi hoàn thành đăng ký, ứng dụng tự động **huấn luyện mô hình AI (LBPH)** và lưu vào cache `lbph_model.yml`.
+
+### 3. Điều khiển trong quá trình chạy
+Trên màn hình quẹt Camera chính:
+- Nhấn **`E`**: Mở lại menu đăng ký thêm khuôn mặt cho cư dân.
+- Nhấn **`Q`**: Thoát ứng dụng.
+
+### 4. Quy trình hoạt động của Thang máy
+1. Khi có người đứng trước Camera, hệ thống khoanh vùng khuôn mặt.
+2. Nếu là **Cư dân đã đăng ký** (khung xanh lá): Nhận diện ID -> Tìm Tầng đăng ký mặc định -> Kích hoạt Thang máy -> Mở cửa cabin -> Cư dân bước vào -> Đóng cửa -> Thang máy di chuyển đến tầng đích -> Mở cửa tại tầng đích -> Gửi tín hiệu điều khiển tầng qua Cổng COM.
+3. Nếu là **Người lạ** (khung đỏ): Hiển thị thông báo "Nguoi la! Khong co quyen" và không kích hoạt thang máy.
+
+---
+
+## ❓ Xử lý sự cố thường gặp (Troubleshooting)
+
+| Sự cố | Nguyên nhân | Cách khắc phục |
 | :--- | :--- | :--- |
-| `main.cpp` | Chứa luồng xử lý chính, máy trạng thái thang máy, giao diện đồ họa và cấu hình giao tiếp cổng COM. | **Bắt buộc** |
-| `database.h` & `database.cpp` | Khai báo và định nghĩa lớp quản lý cơ sở dữ liệu SQLite3 và tập dữ liệu huấn luyện khuôn mặt. | **Bắt buộc** |
-| `CMakeLists.txt` | File cấu hình CMake giúp người khác dễ dàng cài đặt thư viện và build dự án trên máy của họ. | **Bắt buộc** |
-| `.gitignore` | Định nghĩa các file tạm thời, file build (`build/`), thư mục môi trường ảo Python (`docx_venv/`), và file cấu hình IDE (`.vscode/`) để không bị đẩy nhầm lên GitHub. | **Bắt buộc** |
-| `bao_cao_du_an.tex` | File báo cáo dự án định dạng LaTeX. Nếu đây là đồ án hoặc bài tập lớn, bạn có thể đẩy lên file này cùng các file tuần liên quan. | *Khuyến khích* |
-| `README.md` | Tài liệu hướng dẫn này để hiển thị trên trang chủ kho lưu trữ GitHub. | **Bắt buộc** |
-
-### Các thư mục/file **KHÔNG** nên đẩy lên GitHub (đã được cấu hình trong `.gitignore`):
-- Thư mục `build/` (Chứa các file tạm khi biên dịch và file thực thi `.exe`).
-- Thư mục `.vscode/` (Chứa cấu hình cá nhân của phần mềm soạn thảo VS Code).
-- Thư mục `docx_venv/` (Môi trường ảo Python của cá nhân bạn).
-- Các file mô hình đã huấn luyện như `lbph_model.yml` hoặc file cơ sở dữ liệu SQLite thực tế chứa dữ liệu cá nhân (trừ khi bạn muốn cung cấp một cơ sở dữ liệu mẫu nhỏ).
+| `Loi: Khong tim thay haarcascade_frontalface_alt.xml!` | Thiếu file Haar Cascade trong thư mục làm việc `build/`. | Copy file `haarcascade_frontalface_alt.xml` vào cùng thư mục chứa `SmartElevatorCamera.exe` (`build/`). |
+| `Loi: Khong the mo bat ky webcam nao!` | Camera đang bị phần mềm khác sử dụng (Zoom, Teams, Browser) hoặc bị khóa quyền. | Đóng các ứng dụng đang dùng camera và kiểm tra *Windows Settings -> Privacy & Security -> Camera*. |
+| Thiếu DLL (`libopencv_core...dll`, `sqlite3.dll`...) | Windows không tìm thấy các file thư viện DLL của MSYS2. | Chạy ứng dụng qua file `run.bat` hoặc thêm `C:\msys64\ucrt64\bin` vào biến môi trường `PATH`. |
+| `Khong the ket noi cong COM3` | Chưa kết nối phần cứng Cổng COM hoặc chưa cài Virtual Serial Port. | Không ảnh hưởng. Hệ thống tự chuyển sang **Chế độ DEMO** và vẫn hoạt động đầy đủ tính năng AI & Giao diện thang máy. |
 
 ---
 
-## 🛠️ Yêu cầu hệ thống & Thư viện liên kết
+## 📜 Giấy phép & Tác giả
+- Dự án Đồ án / Bài tập lớn: **Hệ thống Camera Thang máy Thông minh**.
+- Phát triển bằng **C++17**, **OpenCV 4.x**, **SQLite3**, **Win32 API**.
 
-Để biên dịch và chạy dự án này, máy tính cần cài đặt các công cụ sau:
 
-- **Hệ điều hành**: Windows (do sử dụng thư viện `windows.h` để quản lý cổng COM).
-- **Trình biên dịch**: GCC (hỗ trợ C++17) hoặc MSVC (Visual Studio).
-- **CMake**: Phiên bản 3.10 trở lên.
-- **Thư viện OpenCV**: Yêu cầu cài đặt thêm gói `opencv_contrib` (có chứa module `face` để nhận diện khuôn mặt).
-- **Thư viện SQLite3**: Để lưu trữ và quản lý cơ sở dữ liệu.
-
----
-
-## 🔨 Hướng dẫn biên dịch và chạy dự án
-
-1. **Clone dự án từ GitHub**:
-   ```bash
-   git clone <link_github_cua_ban>
-   cd <ten_thu_muc_du_an>
-   ```
-
-2. **Tạo thư mục build và chạy CMake**:
-   ```bash
-   mkdir build
-   cd build
-   cmake ..
-   cmake --build . --config Release
-   ```
-
-3. **Chạy chương trình**:
-   Sau khi biên dịch thành công, file thực thi sẽ được tạo ra trong thư mục `build/`. Bạn chạy trực tiếp:
-   ```bash
-   ./SmartElevatorCamera
-   ```
-
-*(Lưu ý: Đảm bảo bạn đã cấu hình đúng đường dẫn OpenCV trong `CMakeLists.txt` tương ứng với đường dẫn trên máy tính của bạn trước khi chạy CMake).*
-
----
-
-## 📝 Tài liệu & Báo cáo liên quan
-- Các file `.tex` trong dự án chứa chi tiết nội dung báo cáo thực tập và tiến độ hàng tuần của dự án. Bạn có thể biên dịch chúng sang file PDF bằng công cụ biên dịch LaTeX (như TeXstudio hoặc Overleaf) để đọc báo cáo chi tiết.
